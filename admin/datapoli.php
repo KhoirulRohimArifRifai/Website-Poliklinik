@@ -333,7 +333,7 @@ if (isset($_POST['buttondaftar'])) {
                                                     </button>
 
                                                     <!-- Tombol Hapus -->
-                                                    <form action="manajemenpoli/delete.php" method="post" class="inline">
+                                                    <form action="manajemenpoli/delete.php" method="post" class="inline" onsubmit="return confirmDelete()">
                                                         <input type="hidden" name="id">
                                                         <button class="btn btn-error" name="id" value="<?php echo $row['id']; ?>">
                                                             <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
@@ -422,8 +422,9 @@ if (isset($_POST['buttondaftar'])) {
     //     }
     // });
 
-    
-
+    function confirmDelete() {
+        return confirm("Apakah Anda yakin ingin menghapus data ini?");
+    }
     document.getElementById('nama').addEventListener('input', function(event) {
         // Memastikan hanya huruf dan spasi yang diterima
         this.value = this.value.replace(/[^A-Za-z\s]/g, '');

@@ -1,3 +1,26 @@
+<?php
+include "../koneksi.php";
+
+// if (isset($_POST['daftar'])) {
+//     $nama = $_POST['nama'];
+//     $jeniskelamin = $_POST['jeniskelamin'];
+//     $umur = $_POST['umur'];
+//     $alamat = $_POST['alamat'];
+//     $email = $_POST['email'];
+//     $nomorhp = $_POST['nomor'];
+//     $tgldaftar = $_POST['tanggal'];
+//     $poli = $_POST['poli'];
+
+//     mysqli_query($conn, "INSERT INTO pendaftaranpasien (nama, jeniskelamin, umur, alamat, email, nomorhp, tgldaftar, poli) 
+//         VALUES ('$nama', '$jeniskelamin', '$umur', '$alamat', '$email', '$nomorhp', '$tgldaftar', '$poli')");
+
+//     // Query untuk mengambil data dari tabel poli
+// }
+$sql = "SELECT * FROM poli"; // Ganti 'poli' dengan nama tabel Anda
+$result = $conn->query($sql);
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -151,28 +174,35 @@
                                                                         </div>
                                                                     </div>
 
-                                                                    <div>
-                                                                        <label for="email" class="block text-sm mb-2 dark:text-white">Email</label>
-                                                                        <div class="relative">
-                                                                            <input type="email" id="email" name="email" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required aria-describedby="email-error">
+                                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                                                                        <div>
+                                                                            <label for="nomorhp" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Tanggal Pelayanan</label>
+                                                                            <input type="date" name="nomorhp" id="nomorhp" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+                                                                        </div>
+                                                                        <div>
+                                                                            <label for="poli" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Pilih Poli</label>
+                                                                            <select name="poli" id="poli" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+                                                                                <option value="" disabled selected>Pilih Poli</option>
+                                                                                <?php
+                                                                                // Periksa apakah ada data
+                                                                                if ($result->num_rows > 0) {
+                                                                                    // Loop untuk menampilkan setiap data poli
+                                                                                    while ($row = $result->fetch_assoc()) {
+                                                                                        echo "<option value='" . $row["id"] . "'>" . $row["namapoli"] . "</option>";
+                                                                                    }
+                                                                                } else {
+                                                                                    echo "<option disabled>Tidak ada data</option>";
+                                                                                }
+                                                                                ?>
+                                                                            </select>
                                                                         </div>
                                                                     </div>
-
                                                                     <div>
-                                                                        <label for="poli" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Pilih Poli</label>
-                                                                        <select name="poli" id="poli" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                            <option value="" disabled selected>Pilih Poli</option>
-                                                                            <option value="umum">Poli Umum</option>
-                                                                            <option value="anak">Poli Anak</option>
-                                                                            <option value="gigi">Poli Gigi</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div>
-                                                                            <label for="hs-feedback-post-comment-textarea-1" class="block mb-2 text-sm font-medium dark:text-white">Keluhan Pasien</label>
-                                                                            <div class="mt-1">
-                                                                                <textarea id="deskripsi" name="deskripsi" rows="3" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"></textarea>
-                                                                            </div>
+                                                                        <label for="hs-feedback-post-comment-textarea-1" class="block mb-2 text-sm font-medium dark:text-white">Keluhan Pasien</label>
+                                                                        <div class="mt-1">
+                                                                            <textarea id="deskripsi" name="deskripsi" rows="3" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"></textarea>
                                                                         </div>
+                                                                    </div>
 
                                                                     <button type="submit" id="buttondaftar" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">Tambah Data</button>
                                                                 </div>
