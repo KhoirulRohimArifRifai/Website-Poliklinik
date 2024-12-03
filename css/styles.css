@@ -1,0 +1,49 @@
+
+img.img-fluid {
+    max-width: 100%; /* Mengatur gambar agar tidak lebih besar dari elemen induknya */
+    height: auto; /* Mengatur tinggi gambar agar proporsional sesuai dengan lebarnya */
+    width: 230px; /* Mengatur lebar gambar menjadi 200px (ubah sesuai keinginan) */
+}
+.poppins {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Gaya dasar untuk background */
+/* Animasikan pergantian gambar dengan efek fade */
+.fade-out {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.fade-in {
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+}
+.text-shadow-lg {
+    text-shadow: 2px 4px 6px rgba(0, 0, 0, 0.8);
+}
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* atau sesuaikan dengan lebar yang diinginkan */
+}
+
+.btn {
+    width: 150px; /* sesuaikan ukuran tombol jika diperlukan */
+}
+#map {
+    height: 400px; /* Set the height of the map */
+}
+.bg-gradient-custom {
+    background: linear-gradient(90deg, #3B82F6, #6F3AFA);
+}
+.gradient-button {
+    background: transparent; /* Menjaga tombol tetap transparan di bawah */
+    transition: background 0.3s ease; /* Transisi halus saat hover */
+}
+
+.gradient-button:hover {
+    background: linear-gradient(90deg, #3B82F6, #6F3AFA); /* Gradient saat hover */
+    border-color: transparent; /* Menghilangkan border saat hover, opsional */
+}

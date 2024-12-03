@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "boxicons": "^2.1.4",
+    "preline": "^2.5.1",
+    "sweetalert2": "^11.14.5"
+  },
+  "devDependencies": {
+    "daisyui": "^4.12.13"
+  }
+}
