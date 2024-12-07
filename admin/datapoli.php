@@ -20,29 +20,57 @@ if (isset($_POST['buttondaftar'])) {
     $query = "INSERT INTO poli (namapoli, spesialis, biaya, status, deskripsi) 
                 VALUES ('$nama', '$spesialis', '$biaya', '$status', '$deskripsi')";
 
-    // Eksekusi query dan cek apakah berhasil
+    // Eksekusi query
     if (mysqli_query($conn, $query)) {
-        // Set session untuk status berhasil disimpan
-        $_SESSION['alert'] = [
-            'message' => 'Data berhasil disimpan!',
-            'type' => 'success'
-        ];
+        // Jika berhasil
+        echo "
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css'>
+            <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+        </head>
+        <body>
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Data poli berhasil ditambahkan!',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location = 'datapoli.php'; // Redirect ke halaman lain
+                });
+            </script>
+        </body>
+        </html>";
     } else {
-        // Set session untuk status gagal disimpan
-        $_SESSION['alert'] = [
-            'message' => 'Gagal menyimpan data!',
-            'type' => 'error'
-        ];
+        // Jika gagal
+        echo "
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css'>
+            <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+        </head>
+        <body>
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Terjadi kesalahan: " . addslashes(mysqli_error($conn)) . "',
+                    confirmButtonText: 'Coba Lagi'
+                }).then(() => {
+                    window.history.back(); // Kembali ke halaman sebelumnya
+                });
+            </script>
+        </body>
+        </html>";
     }
-
-    // Redirect untuk menghindari pengulangan pengiriman form dan alert
-    header('Location: ' . $_SERVER['PHP_SELF']);
-    exit(); // Pastikan script berhenti setelah redirect
-
+ // Pastikan script berhenti setelah redirect
+}
     // Query untuk mengambil data dari tabel poli
     $query = "SELECT * FROM poli";
     $result = mysqli_query($conn, $query);
-}
 
 ?>
 
@@ -76,9 +104,10 @@ if (isset($_POST['buttondaftar'])) {
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.13/dist/full.min.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 
 
 
@@ -333,7 +362,7 @@ if (isset($_POST['buttondaftar'])) {
                                                     </button>
 
                                                     <!-- Tombol Hapus -->
-                                                    <form action="manajemenpoli/delete.php" method="post" class="inline" onsubmit="return confirmDelete()">
+                                                    <form id="deleteForm" action="manajemenpoli/delete.php" method="post" class="inline" onsubmit="return confirmDelete(event)">
                                                         <input type="hidden" name="id">
                                                         <button class="btn btn-error" name="id" value="<?php echo $row['id']; ?>">
                                                             <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
@@ -351,9 +380,18 @@ if (isset($_POST['buttondaftar'])) {
 
                             <!-- Footer -->
                             <div class="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-t border-gray-200 dark:border-neutral-700">
+                            <?php
+                                // Query untuk menghitung jumlah data di tabel
+                                $query = "SELECT COUNT(*) AS total_results FROM poli"; // Ganti 'nama_tabel' dengan nama tabel yang sesuai
+                                $result = mysqli_query($conn, $query); // Ganti $koneksi dengan koneksi database Anda
+
+                                // Ambil hasil jumlah data
+                                $row = mysqli_fetch_assoc($result);
+                                $total_results = $row['total_results'];
+                                ?>
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-neutral-400">
-                                        <span class="font-semibold text-gray-800 dark:text-neutral-200">1</span> results
+                                        <span class="font-semibold text-gray-800 dark:text-neutral-200"><?php echo $total_results; ?></span> results
                                     </p>
                                 </div>
 
@@ -435,28 +473,24 @@ if (isset($_POST['buttondaftar'])) {
     });
 
     // Tangkap tombol dengan id "delete-button"
-    document.getElementById('bthapus').addEventListener('click', function() {
-        // Tampilkan SweetAlert2
+    function confirmDelete(event) {
+        event.preventDefault(); // Mencegah pengiriman formulir langsung
+
         Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Data yang dihapus tidak dapat dikembalikan!",
-            icon: 'warning',
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire(
-                    'Terhapus!',
-                    'Data Anda telah dihapus.',
-                    'success'
-                );
-                // Tambahkan aksi penghapusan data di sini (misalnya, kirim request ke server)
+                // Jika pengguna menekan tombol "Yes, delete it!", kirim formulir
+                document.getElementById('deleteForm').submit();
             }
         });
-    });
+    }
 
     <?php
     // Cek apakah ada session alert yang diset
