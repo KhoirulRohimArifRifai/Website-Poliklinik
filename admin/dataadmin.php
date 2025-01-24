@@ -1,3 +1,74 @@
+<?php
+// Include koneksi database
+include '../koneksi.php';
+
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Ambil data dari form
+    $nama = $_POST['nama'];
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Query untuk insert data ke tabel admin
+    $sql = "INSERT INTO tb_admin (nama_admin, username, email, password) 
+            VALUES (?, ?, ?, ?)";
+
+    // Siapkan statement
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssss", $nama, $username, $email, $password);
+
+    // Eksekusi query
+    if ($stmt->execute()) {
+        echo "
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css'>
+            <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+        </head>
+        <body>
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Data admin berhasil ditambahkan!',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location = 'dataadmin.php'; // Redirect ke halaman lain
+                });
+            </script>
+        </body>
+        </html>";
+    } else {
+        echo "
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css'>
+            <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+        </head>
+        <body>
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Terjadi kesalahan: " . addslashes($conn->error) . "',
+                    confirmButtonText: 'Coba Lagi'
+                }).then(() => {
+                    window.history.back(); // Kembali ke halaman sebelumnya
+                });
+            </script>
+        </body>
+        </html>";
+    }
+}
+
+
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -123,56 +194,47 @@
 
                                                         <div class="mt-5">
                                                             <!-- Form -->
-                                                            <form id="form-pasien">
+                                                            <form id="form-pasien" action="dataadmin.php" method="POST">
                                                                 <div class="grid gap-y-4">
-                                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                                                                    <div>
                                                                         <div>
-                                                                            <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Pasien</label>
+                                                                            <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Admin</label>
                                                                             <input type="text" name="nama" id="nama" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
                                                                         </div>
-                                                                        <div>
-                                                                            <label for="jeniskelamin" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jenis Kelamin</label>
-                                                                            <select name="jeniskelamin" id="jeniskelamin" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                                <option value="" disabled selected>Pilih Jenis Kelamin</option>
-                                                                                <option value="laki">Laki-laki</option>
-                                                                                <option value="perempuan">Perempuan</option>
-                                                                            </select>
-                                                                        </div>
                                                                     </div>
-
-                                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                                                                    <div>
                                                                         <div>
-                                                                            <label for="usia" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Usia</label>
-                                                                            <input type="text" name="usia" id="usia" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                        </div>
-                                                                        <div>
-                                                                            <label for="nomorhp" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">No.HP</label>
-                                                                            <input type="text" name="nomorhp" id="nomorhp" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+                                                                            <label for="username" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Username</label>
+                                                                            <input type="text" name="username" id="username" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
                                                                         </div>
                                                                     </div>
 
                                                                     <div>
-                                                                        <label for="email" class="block text-sm mb-2 dark:text-white">Email</label>
-                                                                        <div class="relative">
+                                                                        <div>
+                                                                            <label for="email" class="block text-sm mb-2 dark:text-white">Email</label>
                                                                             <input type="email" id="email" name="email" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required aria-describedby="email-error">
                                                                         </div>
                                                                     </div>
-
                                                                     <div>
-                                                                        <label for="poli" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Pilih Poli</label>
-                                                                        <select name="poli" id="poli" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                            <option value="" disabled selected>Pilih Poli</option>
-                                                                            <option value="umum">Poli Umum</option>
-                                                                            <option value="anak">Poli Anak</option>
-                                                                            <option value="gigi">Poli Gigi</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div>
-                                                                            <label for="hs-feedback-post-comment-textarea-1" class="block mb-2 text-sm font-medium dark:text-white">Keluhan Pasien</label>
-                                                                            <div class="mt-1">
-                                                                                <textarea id="deskripsi" name="deskripsi" rows="3" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"></textarea>
+                                                                        <div>
+                                                                            <label for="password" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Password</label>
+                                                                            <div class="relative">
+                                                                                <input type="password" name="password" id="password" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+                                                                                <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 dark:text-neutral-400">
+                                                                                    <!-- Icon for closed eye (password hidden) -->
+                                                                                    <svg id="eyeIconClosed" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                                                                                    </svg>
+                                                                                    <!-- Icon for open eye (password visible) -->
+                                                                                    <svg id="eyeIconOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hidden">
+                                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                                                                    </svg>
+                                                                                </button>
                                                                             </div>
                                                                         </div>
+
+                                                                    </div>
 
                                                                     <button type="submit" id="buttondaftar" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">Tambah Data</button>
                                                                 </div>
@@ -323,6 +385,23 @@
 </body>
 
 <script>
+    document.getElementById('togglePassword').addEventListener('click', function () {
+    const passwordField = document.getElementById('password');
+    const eyeIconClosed = document.getElementById('eyeIconClosed');
+    const eyeIconOpen = document.getElementById('eyeIconOpen');
+
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';  // Show password
+        eyeIconClosed.classList.add('hidden');  // Hide closed eye
+        eyeIconOpen.classList.remove('hidden');  // Show open eye
+    } else {
+        passwordField.type = 'password';  // Hide password
+        eyeIconClosed.classList.remove('hidden');  // Show closed eye
+        eyeIconOpen.classList.add('hidden');  // Hide open eye
+    }
+});
+
+
     // document.getElementById("buttondaftar").addEventListener("click", function(event) {
     //     // Mencegah form submit default jika diperlukan
     //     event.preventDefault();
@@ -360,14 +439,6 @@
     document.getElementById('nama').addEventListener('input', function(event) {
         // Memastikan hanya huruf dan spasi yang diterima
         this.value = this.value.replace(/[^A-Za-z\s]/g, '');
-    });
-    document.getElementById('usia').addEventListener('input', function(event) {
-        // Membatasi hanya angka dan maksimal 2 digit
-        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 2);
-    });
-    document.getElementById('nomorhp').addEventListener('input', function(event) {
-        // Membatasi hanya angka dan maksimal 2 digit
-        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13);
     });
 </script>
 
