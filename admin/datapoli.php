@@ -369,6 +369,7 @@ if (isset($_POST['buttondaftar'])) {
                                                         </button>
                                                     </form>
                                                 </div>
+                                            </td>
 
                                             <?php } ?>
 

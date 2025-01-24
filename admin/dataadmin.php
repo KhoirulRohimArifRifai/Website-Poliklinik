@@ -257,7 +257,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                         <th scope="col" class="ps-6 py-3 text-start">
                                             <div class="flex items-center gap-x-2">
                                                 <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                                                    Nama
+                                                    No
                                                 </span>
                                             </div>
                                         </th>
@@ -265,7 +265,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                         <th scope="col" class="px-6 py-3 text-start">
                                             <div class="flex items-center gap-x-2">
                                                 <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                                                    Jenis Kelamin
+                                                    Nama Admin
                                                 </span>
                                             </div>
                                         </th>
@@ -273,7 +273,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                         <th scope="col" class="px-6 py-3 text-start">
                                             <div class="flex items-center gap-x-2">
                                                 <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                                                    Umur
+                                                    Username
                                                 </span>
                                             </div>
                                         </th>
@@ -281,15 +281,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                         <th scope="col" class="px-6 py-3 text-start">
                                             <div class="flex items-center gap-x-2">
                                                 <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                                                    Nomor HP
-                                                </span>
-                                            </div>
-                                        </th>
-
-                                        <th scope="col" class="px-6 py-3 text-start">
-                                            <div class="flex items-center gap-x-2">
-                                                <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                                                    Poli
+                                                    Email
                                                 </span>
                                             </div>
                                         </th>
@@ -304,46 +296,61 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                     </tr>
                                 </thead>
 
-                                <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
-                                    <tr>
-                                        <td class="size-px whitespace-nowrap" style="width: 180px;">
-                                            <div class="ps-6 py-3">
-                                                <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">Khoirul Rohim Arif Rifa'i</span>
-                                            </div>
-                                        </td>
-
-                                        <td class="size-px whitespace-nowrap" style="width: 90px;">
-                                            <div class="px-6 py-3">
-                                                <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">Laki Laki</span>
-                                            </div>
-                                        </td>
-                                        <td class="size-px whitespace-nowrap">
-                                            <div class="px-6 py-3">
-                                                <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">17</span>
-                                            </div>
-                                        </td>
-                                        <td class="size-px whitespace-nowrap">
-                                            <div class="px-6 py-3">
-                                                <div class="flex items-center gap-x-3">
-                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">01234567899</span>
+                                <?php
+                                $no = 1;
+                                $data = mysqli_query($conn, "SELECT * FROM tb_admin");
+                                while ($row = mysqli_fetch_assoc($data)) {
+                                ?>
+                                    <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
+                                        <tr>
+                                            <td class="size-px whitespace-nowrap">
+                                                <div class="ps-6 py-3">
+                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"> <?php echo $no++ ?> </span>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td class="size-px whitespace-nowrap">
-                                            <div class="px-6 py-3">
-                                                <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">Poli Umum</span>
-                                            </div>
-                                        </td>
-                                        <td class="size-px whitespace-nowrap">
-                                            <div class="px-6 py-1.5">
-                                                <button class="btn btn-success"><i class="fa-solid fa-eye" style="color: #ffffff;"></i></button>
-                                                <button class="btn btn-warning"><i class="fa-solid fa-pen-to-square" style="color: #ffffff;"></i></button>
-                                                <button class="btn btn-error"><i class="fa-solid fa-trash-can" style="color: #ffffff;"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            </td>
 
-                                </tbody>
+                                            <td class="size-px whitespace-nowrap" style="width: 180px;">
+                                                <div class="ps-6 py-3">
+                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"> <?php echo $row['nama_admin']; ?> </span>
+                                                </div>
+                                            </td>
+
+                                            <td class="size-px whitespace-nowrap" style="width: 90px;">
+                                                <div class="px-6 py-3">
+                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['username']; ?></span>
+                                                </div>
+                                            </td>
+                                            <td class="size-px whitespace-nowrap">
+                                                <div class="px-6 py-3">
+                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['email']; ?></span>
+                                                </div>
+                                            </td>
+                                            <td class="size-px whitespace-nowrap">
+                                                <div class="flex items-center px-6 py-1.5 space-x-2">
+                                                    <!-- Tombol Lihat -->
+                                                    <button class="btn btn-success" id="btlihat-<?php echo $row['id']; ?>">
+                                                        <i class="fa-solid fa-eye" style="color: #ffffff;"></i>
+                                                    </button>
+
+                                                    <!-- Tombol Edit -->
+                                                    <button class="btn btn-warning" id="btedit-<?php echo $row['id']; ?>">
+                                                        <i class="fa-solid fa-pen-to-square" style="color: #ffffff;"></i>
+                                                    </button>
+
+                                                    <!-- Tombol Hapus -->
+                                                    <form id="deleteForm" action="manajemenpoli/delete.php" method="post" class="inline" onsubmit="return confirmDelete(event)">
+                                                        <input type="hidden" name="id">
+                                                        <button class="btn btn-error" name="id" value="<?php echo $row['id']; ?>">
+                                                            <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+
+                                        <?php } ?>
+                                        </tr>
+
+                                    </tbody>
                             </table>
                             <!-- End Table -->
 
@@ -385,21 +392,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </body>
 
 <script>
-    document.getElementById('togglePassword').addEventListener('click', function () {
-    const passwordField = document.getElementById('password');
-    const eyeIconClosed = document.getElementById('eyeIconClosed');
-    const eyeIconOpen = document.getElementById('eyeIconOpen');
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordField = document.getElementById('password');
+        const eyeIconClosed = document.getElementById('eyeIconClosed');
+        const eyeIconOpen = document.getElementById('eyeIconOpen');
 
-    if (passwordField.type === 'password') {
-        passwordField.type = 'text';  // Show password
-        eyeIconClosed.classList.add('hidden');  // Hide closed eye
-        eyeIconOpen.classList.remove('hidden');  // Show open eye
-    } else {
-        passwordField.type = 'password';  // Hide password
-        eyeIconClosed.classList.remove('hidden');  // Show closed eye
-        eyeIconOpen.classList.add('hidden');  // Hide open eye
-    }
-});
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text'; // Show password
+            eyeIconClosed.classList.add('hidden'); // Hide closed eye
+            eyeIconOpen.classList.remove('hidden'); // Show open eye
+        } else {
+            passwordField.type = 'password'; // Hide password
+            eyeIconClosed.classList.remove('hidden'); // Show closed eye
+            eyeIconOpen.classList.add('hidden'); // Hide open eye
+        }
+    });
 
 
     // document.getElementById("buttondaftar").addEventListener("click", function(event) {

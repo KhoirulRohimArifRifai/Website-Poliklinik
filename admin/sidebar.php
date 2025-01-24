@@ -337,7 +337,10 @@ $subMenuActive = in_array(basename($_SERVER['PHP_SELF']), ['datapasien.php', 'da
 
                         <!-- Menu Manajemen Obat -->
                         <li>
-                            <a class="w-full flex items-center gap-x-3.5 py-2 px-2.5 mt-2 text-sm text-gray-800 font-bold rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 dark:text-neutral-200 dark:hover:text-neutral-300" href="#">
+                            <a
+                                class="w-full flex items-center gap-x-3.5 py-2 px-2.5 mt-2 text-sm text-gray-800 font-bold rounded-lg hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-neutral-700 dark:text-neutral-200 dark:hover:text-neutral-300 
+        <?php echo basename($_SERVER['PHP_SELF']) == 'dataobat.php' ? 'bg-gray-100 dark:bg-neutral-700 dark:text-neutral-300' : ''; ?>"
+                                href="dataobat.php">
                                 <i class="fa-solid fa-pills"></i>
                                 Manajemen Obat
                             </a>
