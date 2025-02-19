@@ -244,7 +244,7 @@ $read = $conn->query($dialogread);
                                                                                 if ($result->num_rows > 0) {
                                                                                     // Loop untuk menampilkan setiap data poli
                                                                                     while ($row = $result->fetch_assoc()) {
-                                                                                        echo "<option value='" . $row["namapoli"] . "'>" . $row["spesialis"] . "</option>";
+                                                                                        echo "<option value='" . $row["namapoli"] . "'>" . $row["namapoli"] . "</option>";
                                                                                     }
                                                                                 } else {
                                                                                     echo "<option disabled>Tidak ada data</option>";

@@ -365,9 +365,12 @@ $result = $conn->query($sql);
                                             </td>
                                             <td class="size-px whitespace-nowrap">
                                                 <div class="px-6 py-3">
-                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['tgldaftar']; ?></span>
+                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">
+                                                        <?php echo date('d-m-Y', strtotime($row['tgldaftar'])); ?>
+                                                    </span>
                                                 </div>
                                             </td>
+
                                             <td class="size-px whitespace-nowrap">
                                                 <div class="px-6 py-3">
                                                     <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['poli']; ?></span>

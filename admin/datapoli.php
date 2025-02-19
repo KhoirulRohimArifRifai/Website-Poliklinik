@@ -36,6 +36,7 @@ if (isset($_POST['buttondaftar'])) {
                     icon: 'success',
                     title: 'Berhasil!',
                     text: 'Data poli berhasil ditambahkan!',
+                    showConfirmButton: true, // Menampilkan tombol OK
                     confirmButtonText: 'OK'
                 }).then(() => {
                     window.location = 'datapoli.php'; // Redirect ke halaman lain
@@ -66,11 +67,11 @@ if (isset($_POST['buttondaftar'])) {
         </body>
         </html>";
     }
- // Pastikan script berhenti setelah redirect
+    // Pastikan script berhenti setelah redirect
 }
-    // Query untuk mengambil data dari tabel poli
-    $query = "SELECT * FROM poli";
-    $result = mysqli_query($conn, $query);
+// Query untuk mengambil data dari tabel poli
+$query = "SELECT * FROM poli";
+$result = mysqli_query($conn, $query);
 
 ?>
 
@@ -104,8 +105,8 @@ if (isset($_POST['buttondaftar'])) {
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.13/dist/full.min.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
-    
+
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -362,8 +363,15 @@ if (isset($_POST['buttondaftar'])) {
                                                     </button>
 
                                                     <!-- Tombol Hapus -->
-                                                    <form id="deleteForm" action="manajemenpoli/delete.php" method="post" class="inline" onsubmit="return confirmDelete(event)">
-                                                        <input type="hidden" name="id">
+                                                    <!-- Tambahkan data-id pada tombol hapus -->
+                                                    <!-- <form class="deleteForm" action="manajemenpoli/delete.php" method="post">
+                                                        <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                                                        <button type="button" class="btn btn-error deleteBtn" data-id="<?php echo $row['id']; ?>">
+                                                            <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
+                                                        </button>
+                                                    </form> -->
+                                                    <form action="manajemenpoli/delete.php" method="post" class="inline deleteForm">
+                                                        <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
                                                         <button class="btn btn-error" name="id" value="<?php echo $row['id']; ?>">
                                                             <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
                                                         </button>
@@ -371,7 +379,7 @@ if (isset($_POST['buttondaftar'])) {
                                                 </div>
                                             </td>
 
-                                            <?php } ?>
+                                        <?php } ?>
 
                                         </tr>
 
@@ -381,7 +389,7 @@ if (isset($_POST['buttondaftar'])) {
 
                             <!-- Footer -->
                             <div class="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-t border-gray-200 dark:border-neutral-700">
-                            <?php
+                                <?php
                                 // Query untuk menghitung jumlah data di tabel
                                 $query = "SELECT COUNT(*) AS total_results FROM poli"; // Ganti 'nama_tabel' dengan nama tabel yang sesuai
                                 $result = mysqli_query($conn, $query); // Ganti $koneksi dengan koneksi database Anda
@@ -473,25 +481,50 @@ if (isset($_POST['buttondaftar'])) {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
 
-    // Tangkap tombol dengan id "delete-button"
-    function confirmDelete(event) {
-        event.preventDefault(); // Mencegah pengiriman formulir langsung
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".deleteForm").forEach(form => {
+            form.addEventListener("submit", function(event) {
+                event.preventDefault(); // Mencegah pengiriman form langsung
 
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Jika pengguna menekan tombol "Yes, delete it!", kirim formulir
-                document.getElementById('deleteForm').submit();
-            }
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit(); // Jika dikonfirmasi, kirim form
+                    }
+                });
+            });
         });
-    }
+    });
+
+    //delete
+    document.addEventListener("DOMContentLoaded", function() {
+        <?php if (isset($_SESSION['success'])) : ?>
+            Swal.fire({
+                icon: "success",
+                title: "Deleted!",
+                text: "<?php echo $_SESSION['success']; ?>",
+                showConfirmButton: true, // Menampilkan tombol OK
+                confirmButtonText: "OK"
+            });
+            <?php unset($_SESSION['success']); ?>
+        <?php elseif (isset($_SESSION['error'])) : ?>
+            Swal.fire({
+                icon: "error",
+                title: "Failed!",
+                text: "<?php echo $_SESSION['error']; ?>",
+                showConfirmButton: true, // Menampilkan tombol OK
+                confirmButtonText: "OK"
+            });
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+    });
 
     <?php
     // Cek apakah ada session alert yang diset
