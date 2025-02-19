@@ -277,7 +277,7 @@ $result = $conn->query($sql);
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
                                 <thead class="bg-gray-50 dark:bg-neutral-800">
                                     <tr>
-                                    <th scope="col" class="ps-6 py-3 text-start">
+                                        <th scope="col" class="ps-6 py-3 text-start">
                                             <div class="flex items-center gap-x-2">
                                                 <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
                                                     No
@@ -339,7 +339,7 @@ $result = $conn->query($sql);
                                 $data = mysqli_query($conn, "SELECT * FROM pasien");
                                 while ($row = mysqli_fetch_assoc($data)) {
                                 ?>
-                                <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
+                                    <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
                                         <tr>
                                             <td class="size-px whitespace-nowrap">
                                                 <div class="ps-6 py-3">
@@ -347,13 +347,13 @@ $result = $conn->query($sql);
                                                 </div>
                                             </td>
 
-                                            <td class="size-px whitespace-nowrap" style="width: ;">
+                                            <td class="size-px whitespace-nowrap">
                                                 <div class="ps-6 py-3">
                                                     <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"> <?php echo $row['nama']; ?> </span>
                                                 </div>
                                             </td>
 
-                                            <td class="size-px whitespace-nowrap" style="width: ;">
+                                            <td class="size-px whitespace-nowrap">
                                                 <div class="px-6 py-3">
                                                     <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['jeniskelamin']; ?></span>
                                                 </div>
@@ -368,7 +368,7 @@ $result = $conn->query($sql);
                                                     <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['tgldaftar']; ?></span>
                                                 </div>
                                             </td>
-                                            <td class="size-px whitespace-nowrap" style="width: ;">
+                                            <td class="size-px whitespace-nowrap">
                                                 <div class="px-6 py-3">
                                                     <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['poli']; ?></span>
                                                 </div>
@@ -376,7 +376,7 @@ $result = $conn->query($sql);
                                             <td class="size-px whitespace-nowrap">
                                                 <div class="flex items-center px-6 py-1.5 space-x-2">
                                                     <!-- Tombol Lihat -->
-                                                    <button class="btn btn-success" id="btlihat-<?php echo $row['id']; ?>">
+                                                    <button class="btn btn-success" id="btlihat-<?php echo $row['id']; ?>" data-id="<?php echo $row['id']; ?>">
                                                         <i class="fa-solid fa-eye" style="color: #ffffff;"></i>
                                                     </button>
 
@@ -402,11 +402,77 @@ $result = $conn->query($sql);
                             </table>
                             <!-- End Table -->
 
+                            <!-- Modal -->
+                            <div id="hs-notifications" class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto" role="dialog" tabindex="-1" aria-labelledby="hs-notifications-label">
+                                <div class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto">
+                                    <div class="relative flex flex-col bg-white border shadow-sm rounded-xl overflow-hidden dark:bg-neutral-900 dark:border-neutral-800">
+                                        <div class="absolute top-2 end-2">
+                                            <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-neutral-400 dark:focus:bg-neutral-600" aria-label="Close" data-hs-overlay="#hs-notifications">
+                                                <span class="sr-only">Close</span>
+                                                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M18 6 6 18" />
+                                                    <path d="m6 6 12 12" />
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        <div class="p-4 sm:p-10 overflow-y-auto">
+                                            <div class="mb-6 text-center">
+                                                <h3 id="hs-notifications-label" class="mb-2 text-xl font-bold text-gray-800 dark:text-neutral-200">
+                                                    Data Pasien
+                                                </h3>
+                                                <p class="text-gray-500 dark:text-neutral-500">
+                                                    Informasi Lengkap Data Pasien
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Pasien</label>
+                                                <input type="text" name="nama" id="nama" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" disabled>
+                                            </div>
+                                            <div>
+                                                <label for="jeniskelamin" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jenis Kelamin</label>
+                                                <input type="text" name="jeniskelamin" id="jeniskelamin" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" disabled>
+                                            </div>
+                                            <div>
+                                                <label for="umur" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Umur</label>
+                                                <input type="text" name="umur" id="umur" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" disabled>
+                                            </div>
+                                            <div>
+                                                <label for="tgldaftar" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Tanggal Daftar</label>
+                                                <input type="text" name="tgldaftar" id="tgldaftar" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" disabled>
+                                            </div>
+                                            <div>
+                                                <label for="poli" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Poli</label>
+                                                <input type="text" name="poli" id="poli" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" disabled>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex justify-end items-center gap-x-2 py-3 px-4 bg-gray-50 border-t dark:bg-neutral-950 dark:border-neutral-800">
+                                            <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" data-hs-overlay="#hs-notifications">
+                                                Close
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
                             <!-- Footer -->
                             <div class="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-t border-gray-200 dark:border-neutral-700">
+                                <?php
+                                // Query untuk menghitung jumlah data di tabel
+                                $query = "SELECT COUNT(*) AS total_results FROM pasien"; // Ganti 'nama_tabel' dengan nama tabel yang sesuai
+                                $result = mysqli_query($conn, $query); // Ganti $koneksi dengan koneksi database Anda
+
+                                // Ambil hasil jumlah data
+                                $row = mysqli_fetch_assoc($result);
+                                $total_results = $row['total_results'];
+                                ?>
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-neutral-400">
-                                        <span class="font-semibold text-gray-800 dark:text-neutral-200">1</span> results
+                                        <span class="font-semibold text-gray-800 dark:text-neutral-200"><?php echo $total_results; ?></span> results
                                     </p>
                                 </div>
 
@@ -440,40 +506,43 @@ $result = $conn->query($sql);
 </body>
 
 <script>
-    // document.getElementById("buttondaftar").addEventListener("click", function(event) {
-    //     // Mencegah form submit default jika diperlukan
-    //     event.preventDefault();
+    // Fungsi untuk menampilkan modal dan mengisi data pasien
+    function showModal(id) {
+        fetch(`get_patient_data.php?id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    // Isi data ke dalam modal
+                    document.getElementById('nama').value = data.nama;
+                    document.getElementById('jeniskelamin').value = data.jeniskelamin;
+                    document.getElementById('umur').value = data.umur;
+                    document.getElementById('tgldaftar').value = data.tgldaftar;
+                    document.getElementById('poli').value = data.poli;
 
-    //     // Array field wajib diisi
-    //     const requiredFields = ["nama", "jeniskelamin", "umur", "nomor", "tanggal", "poli"];
-    //     const emptyFields = [];
+                    // Menampilkan modal (menghapus kelas 'hidden')
+                    const modal = document.getElementById('hs-notifications');
+                    modal.classList.remove('hidden');
+                    modal.classList.add('show'); // Menambahkan kelas 'show' jika perlu
+                } else {
+                    console.log('Data pasien tidak ditemukan');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }
 
-    //     requiredFields.forEach(fieldId => {
-    //         const field = document.getElementById(fieldId);
-    //         if (field && !field.value.trim()) {
-    //             emptyFields.push(fieldId);
-    //         }
-    //     });
 
-    //     // Jika ada lebih dari satu field kosong
-    //     if (emptyFields.length > 0) {
-    //         // Tampilkan SweetAlert jika ada field yang kosong
-    //         Swal.fire({
-    //             icon: 'warning',
-    //             title: 'Oops...',
-    //             text: 'Lengkapi semua formulir.',
-    //         });
-    //     }else {
-    //         // Jika tidak ada field kosong
-    //         Swal.fire({
-    //             icon: 'success',
-    //             title: 'Berhasil!',
-    //             text: 'Semua formulir sudah lengkap.',
-    //         });
-    //         // Lanjutkan ke proses form submission
-    //         // document.getElementById('form-id').submit(); // Uncomment jika menggunakan form HTML
-    //     }
-    // });
+
+    // Menambahkan event listener pada tombol "Lihat"
+    document.querySelectorAll('.btn.btn-success').forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.getAttribute('data-id'); // Ambil ID dari atribut data-id
+            showModal(id);
+        });
+    });
+
+
     document.getElementById('nama').addEventListener('input', function(event) {
         // Memastikan hanya huruf dan spasi yang diterima
         this.value = this.value.replace(/[^A-Za-z\s]/g, '');

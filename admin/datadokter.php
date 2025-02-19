@@ -520,39 +520,48 @@ $read = $conn->query($dialogread);
                 <div class="p-4 sm:p-10 overflow-y-auto">
                     <div class="mb-6 text-center">
                         <h3 id="hs-notifications-label" class="mb-2 text-xl font-bold text-gray-800 dark:text-neutral-200">
-                            Data Dokter
+                            Data Pasien
                         </h3>
                         <p class="text-gray-500 dark:text-neutral-500">
-                            Informasi Lengkap Data Dokter
+                            Informasi Lengkap Data Pasien
                         </p>
                     </div>
                     <div>
                         <div>
-                            <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Dokter</label>
-                            <input type="text" name="nama" id="nama"  class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+                            <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Pasien</label>
+                            <input type="text" id="nama" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" disabled>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
                         <div>
                             <label for="jeniskelamin" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jenis Kelamin</label>
-                            <input type="text" name="usia" id="usia" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+                            <input type="text" id="jeniskelamin" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" disabled>
                         </div>
                         <div>
-                            <label for="usia" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Usia</label>
-                            <input type="text" name="usia" id="usia" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+                            <label for="umur" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Umur</label>
+                            <input type="text" id="umur" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" disabled>
+                        </div>
+                        <div>
+                            <label for="tgldaftar" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Tanggal Daftar</label>
+                            <input type="text" id="tgldaftar" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" disabled>
+                        </div>
+                        <div>
+                            <label for="poli" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Poli</label>
+                            <input type="text" id="poli" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" disabled>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex justify-end items-center gap-x-2 py-3 px-4 bg-gray-50 border-t dark:bg-neutral-950 dark:border-neutral-800">
-                    <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" data-hs-overlay="#hs-notifications">
-                        Cancel
+                    <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" data-hs-overlay="#hs-notifications">
+                        Close
                     </button>
                 </div>
             </div>
         </div>
     </div>
+
 </body>
 
 <script>
@@ -583,40 +592,33 @@ $read = $conn->query($dialogread);
         }
     }
 
-    // document.getElementById("buttondaftar").addEventListener("click", function(event) {
-    //     // Mencegah form submit default jika diperlukan
-    //     event.preventDefault();
+    // Fungsi untuk menampilkan modal dan mengisi data
+    function showModal(data) {
+        // Isi data ke dalam modal
+        document.getElementById('nama').value = data.nama;
+        document.getElementById('jeniskelamin').value = data.jeniskelamin;
+        document.getElementById('umur').value = data.umur;
+        document.getElementById('tgldaftar').value = data.tgldaftar;
+        document.getElementById('poli').value = data.poli;
 
-    //     // Array field wajib diisi
-    //     const requiredFields = ["nama", "jeniskelamin", "umur", "nomor", "tanggal", "poli"];
-    //     const emptyFields = [];
+        // Menampilkan modal
+        const modal = document.getElementById('hs-notifications');
+        modal.classList.remove('hidden');
+    }
 
-    //     requiredFields.forEach(fieldId => {
-    //         const field = document.getElementById(fieldId);
-    //         if (field && !field.value.trim()) {
-    //             emptyFields.push(fieldId);
-    //         }
-    //     });
-
-    //     // Jika ada lebih dari satu field kosong
-    //     if (emptyFields.length > 0) {
-    //         // Tampilkan SweetAlert jika ada field yang kosong
-    //         Swal.fire({
-    //             icon: 'warning',
-    //             title: 'Oops...',
-    //             text: 'Lengkapi semua formulir.',
-    //         });
-    //     }else {
-    //         // Jika tidak ada field kosong
-    //         Swal.fire({
-    //             icon: 'success',
-    //             title: 'Berhasil!',
-    //             text: 'Semua formulir sudah lengkap.',
-    //         });
-    //         // Lanjutkan ke proses form submission
-    //         // document.getElementById('form-id').submit(); // Uncomment jika menggunakan form HTML
-    //     }
-    // });
+    // Menambahkan event listener pada tombol "Lihat"
+    document.querySelectorAll('.btn-success').forEach(button => {
+        button.addEventListener('click', function () {
+            const rowData = {
+                nama: this.closest('tr').querySelector('td:nth-child(2) span').textContent,
+                jeniskelamin: this.closest('tr').querySelector('td:nth-child(3) span').textContent,
+                umur: this.closest('tr').querySelector('td:nth-child(4) span').textContent,
+                tgldaftar: this.closest('tr').querySelector('td:nth-child(5) span').textContent,
+                poli: this.closest('tr').querySelector('td:nth-child(6) span').textContent,
+            };
+            showModal(rowData); // Menampilkan modal dengan data pasien
+        });
+    });
     document.getElementById('nama').addEventListener('input', function(event) {
         // Memastikan hanya huruf dan spasi yang diterima
         this.value = this.value.replace(/[^A-Za-z\s.]/g, '');

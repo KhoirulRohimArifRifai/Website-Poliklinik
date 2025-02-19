@@ -388,7 +388,7 @@ $read = $conn->query($dialogread);
 
                                 <?php
                                 $no = 1;
-                                $data = mysqli_query($conn, "SELECT * FROM dokter");
+                                $data = mysqli_query($conn, "SELECT * FROM obat");
                                 while ($row = mysqli_fetch_assoc($data)) {
                                 ?>
                                     <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
@@ -462,7 +462,7 @@ $read = $conn->query($dialogread);
                             <div class="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-t border-gray-200 dark:border-neutral-700">
                                 <?php
                                 // Query untuk menghitung jumlah data di tabel
-                                $query = "SELECT COUNT(*) AS total_results FROM dokter"; // Ganti 'nama_tabel' dengan nama tabel yang sesuai
+                                $query = "SELECT COUNT(*) AS total_results FROM obat"; // Ganti 'nama_tabel' dengan nama tabel yang sesuai
                                 $result = mysqli_query($conn, $query); // Ganti $koneksi dengan koneksi database Anda
 
                                 // Ambil hasil jumlah data

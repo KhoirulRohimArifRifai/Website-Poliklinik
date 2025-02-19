@@ -356,9 +356,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                             <!-- Footer -->
                             <div class="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-t border-gray-200 dark:border-neutral-700">
+                                <?php
+                                // Query untuk menghitung jumlah data di tabel
+                                $query = "SELECT COUNT(*) AS total_results FROM tb_admin"; // Ganti 'nama_tabel' dengan nama tabel yang sesuai
+                                $result = mysqli_query($conn, $query); // Ganti $koneksi dengan koneksi database Anda
+
+                                // Ambil hasil jumlah data
+                                $row = mysqli_fetch_assoc($result);
+                                $total_results = $row['total_results'];
+                                ?>
                                 <div>
                                     <p class="text-sm text-gray-600 dark:text-neutral-400">
-                                        <span class="font-semibold text-gray-800 dark:text-neutral-200">1</span> results
+                                        <span class="font-semibold text-gray-800 dark:text-neutral-200"><?php echo $total_results; ?></span> results
                                     </p>
                                 </div>
 
