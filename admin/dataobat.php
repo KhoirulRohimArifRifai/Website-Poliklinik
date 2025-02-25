@@ -6,23 +6,21 @@ include "../koneksi.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Ambil data dari form
-    $namadokter = $_POST['nama'];
-    $jeniskelamin = $_POST['jeniskelamin'];
-    $usia = $_POST['usia'];
-    $spesialis = $_POST['spesialis'];
-    $status = $_POST['status'];
-    $jadwalhari = $_POST['tgljadwal'];
-    $jadwaljammulai = $_POST['jammulai'];
-    $jadwaljamselesai = $_POST['jamselesai'];
+    $namaobat = $_POST['nama'];
+    $jenisobat = $_POST['jenis'];
+    $dosis = $_POST['dosis'];
+    $ukuranobat = $_POST['ukuran'];
+    $gambar = $_POST['gambar'];
+    $deskripsi = $_POST['deskripsi'];
 
 
     // Query untuk insert data ke tabel dokter
-    $sql = "INSERT INTO dokter (namadokter, jeniskelamin, usia, spesialis, status, jadwalhari, jadwaljammulai, jadwaljamselesai) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO obat (nama_obat, jenis_obat, dosis, ukuran_obat, gambar_obat, deskripsi) 
+            VALUES (?, ?, ?, ?, ?, ?)";
 
     // Siapkan statement
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssisssss", $namadokter, $jeniskelamin, $usia, $spesialis, $status, $jadwalhari, $jadwaljammulai, $jadwaljamselesai);
+    $stmt->bind_param("ssssss", $namaobat, $jenisobat, $dosis, $ukuranobat, $gambar, $deskripsi);
 
     // Eksekusi query
     if ($stmt->execute()) {
@@ -41,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     text: 'Data dokter berhasil ditambahkan!',
                     confirmButtonText: 'OK'
                 }).then(() => {
-                    window.location = 'datadokter.php';
+                    window.location = 'dataobat.php';
                 });
             </script>
         </body>
@@ -122,7 +120,7 @@ $read = $conn->query($dialogread);
 
 
     <!-- Title -->
-    <title>Manajemen Data Dokter</title>
+    <title>Manajemen Data Obat</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="../../favicon.ico">
@@ -205,110 +203,68 @@ $read = $conn->query($dialogread);
 
                                                     <div class="p-4 sm:p-7">
                                                         <div class="text-center">
-                                                            <h3 id="hs-modal-signin-label" class="block text-2xl font-bold text-gray-800 dark:text-neutral-200">Tambah Data Dokter</h3>
+                                                            <h3 id="hs-modal-signin-label" class="block text-2xl font-bold text-gray-800 dark:text-neutral-200">Tambah Data Obat</h3>
                                                         </div>
 
                                                         <div class="mt-5">
                                                             <!-- Form -->
-                                                            <form id="form-pasien" action="datadokter.php" method="POST">
+                                                            <form id="form-pasien" action="dataobat.php" method="POST">
                                                                 <div class="grid gap-y-4">
-                                                                    <div>
+                                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
                                                                         <div>
-                                                                            <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Dokter</label>
+                                                                            <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Obat</label>
                                                                             <input type="text" name="nama" id="nama" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
                                                                         </div>
-                                                                    </div>
-
-                                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
                                                                         <div>
-                                                                            <label for="jeniskelamin" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jenis Kelamin</label>
-                                                                            <select name="jeniskelamin" id="jeniskelamin" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                                <option value="" disabled selected>Pilih Jenis Kelamin</option>
-                                                                                <option value="laki">Laki-laki</option>
-                                                                                <option value="perempuan">Perempuan</option>
+                                                                            <label for="jenis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jenis Obat</label>
+                                                                            <select name="jenis" id="jenis" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+                                                                                <option value="" disabled selected>Pilih Jenis Obat</option>
+                                                                                <option value="tablet">Tablet</option>
+                                                                                <option value="cair">Cair</option>
                                                                             </select>
-                                                                        </div>
-                                                                        <div>
-                                                                            <label for="usia" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Usia</label>
-                                                                            <input type="text" name="usia" id="usia" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
                                                                         </div>
                                                                     </div>
 
                                                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
                                                                         <div>
-                                                                            <label for="spesialis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Spesialis</label>
-                                                                            <select name="spesialis" id="spesialis" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                                <option value="" disabled selected>Pilih Spesialis</option>
-                                                                                <?php
-                                                                                // Periksa apakah ada data
-                                                                                if ($result->num_rows > 0) {
-                                                                                    // Loop untuk menampilkan setiap data poli
-                                                                                    while ($row = $result->fetch_assoc()) {
-                                                                                        echo "<option value='" . $row["namapoli"] . "'>" . $row["spesialis"] . "</option>";
-                                                                                    }
-                                                                                } else {
-                                                                                    echo "<option disabled>Tidak ada data</option>";
-                                                                                }
-                                                                                ?>
-                                                                            </select>
+                                                                            <label for="dosis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Dosis Obat</label>
+                                                                            <input type="text" name="dosis" id="dosis" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
                                                                         </div>
                                                                         <div>
-                                                                            <label for="status" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Status</label>
-                                                                            <input type="text" name="status" id="status" value="Aktif" readonly
-                                                                                class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                                                                            <label for="ukuran" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Ukuran Obat</label>
+                                                                            <input type="text" name="ukuran" id="ukuran" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
                                                                         </div>
                                                                     </div>
 
                                                                     <div>
                                                                         <div>
-                                                                            <label for="tgljadwal" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Hari Jadwal Dokter</label>
-                                                                            <input type="text" name="tgljadwal" id="tgljadwal" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required onclick="openModal()">
-                                                                        </div>
-
-                                                                        <!-- Modal pilih hari -->
-                                                                        <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
-                                                                            <div class="bg-white dark:bg-neutral-800 rounded-lg p-6 w-96">
-                                                                                <h3 class="text-lg font-semibold mb-4 text-gray-700 dark:text-white">Pilih Hari</h3>
-                                                                                <form id="modalForm">
-                                                                                    <div class="flex flex-col space-y-2">
-                                                                                        <label class="flex items-center">
-                                                                                            <input type="checkbox" name="day" value="Senin" class="mr-2"> Senin
-                                                                                        </label>
-                                                                                        <label class="flex items-center">
-                                                                                            <input type="checkbox" name="day" value="Selasa" class="mr-2"> Selasa
-                                                                                        </label>
-                                                                                        <label class="flex items-center">
-                                                                                            <input type="checkbox" name="day" value="Rabu" class="mr-2"> Rabu
-                                                                                        </label>
-                                                                                        <label class="flex items-center">
-                                                                                            <input type="checkbox" name="day" value="Kamis" class="mr-2"> Kamis
-                                                                                        </label>
-                                                                                        <label class="flex items-center">
-                                                                                            <input type="checkbox" name="day" value="Jumat" class="mr-2"> Jumat
-                                                                                        </label>
-                                                                                        <label class="flex items-center">
-                                                                                            <input type="checkbox" name="day" value="Sabtu" class="mr-2"> Sabtu
-                                                                                        </label>
-                                                                                        <label class="flex items-center">
-                                                                                            <input type="checkbox" name="day" value="Minggu" class="mr-2"> Minggu
-                                                                                        </label>
-                                                                                    </div>
-                                                                                    <div class="mt-4 flex justify-end">
-                                                                                        <button type="button" onclick="saveDays()" class="px-4 py-2 bg-blue-600 text-white rounded-lg">OK</button>
-                                                                                        <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-600 text-white rounded-lg ml-2">Tutup</button>
-                                                                                    </div>
-                                                                                </form>
+                                                                            <label for="gambar" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Gambar Obat</label>
+                                                                            <div class="relative">
+                                                                                <input type="file" name="gambar" id="gambar" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required>
+                                                                                <div class="py-3 px-4 w-full border border-gray-200 rounded-lg text-sm text-neutral-400 bg-white dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+                                                                                    <span id="file-name">Pilih Gambar...</span>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
+
+                                                                        <script>
+                                                                            const fileInput = document.getElementById('gambar');
+                                                                            const fileName = document.getElementById('file-name');
+
+                                                                            fileInput.addEventListener('change', function() {
+                                                                                if (this.files.length > 0) {
+                                                                                    fileName.textContent = this.files[0].name;
+                                                                                } else {
+                                                                                    fileName.textContent = "Pilih Gambar...";
+                                                                                }
+                                                                            });
+                                                                        </script>
                                                                     </div>
-                                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                                                                        <div>
-                                                                            <label for="jamjadwal" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jam Dokter - Mulai</label>
-                                                                            <input type="time" name="jammulai" id="jammulai" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                        </div>
-                                                                        <div>
-                                                                            <label for="jamjadwal" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jam Dokter - Selesai</label>
-                                                                            <input type="time" name="jamselesai" id="jamselesai" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+
+                                                                    <div>
+                                                                        <label for="hs-feedback-post-comment-textarea-1" class="block mb-2 text-sm font-medium dark:text-white">Deskripsi Obat</label>
+                                                                        <div class="mt-1">
+                                                                            <textarea id="deskripsi" name="deskripsi" rows="3" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"></textarea>
                                                                         </div>
                                                                     </div>
                                                                     <button type="submit" id="buttondaftar" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">Tambah Data</button>
@@ -339,7 +295,7 @@ $read = $conn->query($dialogread);
                                         <th scope="col" class="ps-6 py-3 text-start">
                                             <div class="flex items-center gap-x-2">
                                                 <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                                                    Nama Dokter
+                                                    Nama Obat
                                                 </span>
                                             </div>
                                         </th>
@@ -347,7 +303,7 @@ $read = $conn->query($dialogread);
                                         <th scope="col" class="px-6 py-3 text-start">
                                             <div class="flex items-center gap-x-2">
                                                 <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                                                    Spesialis
+                                                    Jenis Obat
                                                 </span>
                                             </div>
                                         </th>
@@ -355,7 +311,7 @@ $read = $conn->query($dialogread);
                                         <th scope="col" class="px-6 py-3 text-start">
                                             <div class="flex items-center gap-x-2">
                                                 <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                                                    Status
+                                                    Dosis
                                                 </span>
                                             </div>
                                         </th>
@@ -363,15 +319,7 @@ $read = $conn->query($dialogread);
                                         <th scope="col" class="px-6 py-3 text-start">
                                             <div class="flex items-center gap-x-2">
                                                 <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                                                    Jadwal Hari Dokter
-                                                </span>
-                                            </div>
-                                        </th>
-
-                                        <th scope="col" class="px-6 py-3 text-start">
-                                            <div class="flex items-center gap-x-2">
-                                                <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-neutral-200">
-                                                    Jam Dokter
+                                                    Ukuran Obat
                                                 </span>
                                             </div>
                                         </th>
@@ -398,48 +346,26 @@ $read = $conn->query($dialogread);
                                                     <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"> <?php echo $no++ ?> </span>
                                                 </div>
                                             </td>
-                                            <td class="size-px whitespace-nowrap" style="width: 180px;">
+                                            <td class="size-px whitespace-nowrap" style="width: 170px;">
                                                 <div class="ps-6 py-3">
-                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"> <?php echo $row['namadokter']; ?> </span>
+                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"> <?php echo $row['nama_obat']; ?> </span>
                                                 </div>
                                             </td>
                                             <td class="size-px whitespace-nowrap">
                                                 <div class="px-6 py-3">
-                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['spesialis']; ?></span>
+                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['jenis_obat']; ?></span>
+                                                </div>
+                                            </td>
+                                            <td class="size-px whitespace-nowrap"style="width: 100px;">
+                                                <div class="px-6 py-3">
+                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['dosis']; ?></span>
                                                 </div>
                                             </td>
                                             <td class="size-px whitespace-nowrap">
                                                 <div class="px-6 py-3">
-                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['status']; ?></span>
+                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['ukuran_obat']; ?></span>
                                                 </div>
                                             </td>
-                                            <td class="size-px whitespace-nowrap" style="width: 60px;">
-                                                <div class="px-6 py-3">
-                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">
-                                                        <?php
-                                                        // Format tanggal menjadi dd/mm/yyyy
-                                                        echo $row['jadwalhari'];
-                                                        ?>
-                                                    </span>
-                                                </div>
-                                            </td>
-                                            <td class="size-px whitespace-nowrap" style="width: 150px;">
-                                                <div class="px-6 py-3">
-                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">
-                                                        <?php
-                                                        // Format jam menjadi jam:menit
-                                                        $jammulai = $row['jadwaljammulai'];
-                                                        $formatted_jammulai = date('H:i', strtotime($jammulai)); // Asumsi format jam awal adalah HH:MM
-
-                                                        $jamselesai = $row['jadwaljamselesai'];
-                                                        $formatted_jamselesai = date('H:i', strtotime($jamselesai));
-
-                                                        echo   $formatted_jammulai . ' - ' . $formatted_jamselesai;
-                                                        ?>
-                                                    </span>
-                                                </div>
-                                            </td>
-
                                             <td class="size-px whitespace-nowrap">
                                                 <div class="px-6 py-1.5">
                                                     <button class="btn btn-success" aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-notifications" data-hs-overlay="#hs-notifications">
@@ -529,7 +455,7 @@ $read = $conn->query($dialogread);
                     <div>
                         <div>
                             <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Dokter</label>
-                            <input type="text" name="nama" id="nama"  class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+                            <input type="text" name="nama" id="nama" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
                         </div>
                     </div>
 

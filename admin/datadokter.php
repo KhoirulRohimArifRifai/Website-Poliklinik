@@ -410,7 +410,10 @@ $read = $conn->query($dialogread);
                                             </td>
                                             <td class="size-px whitespace-nowrap">
                                                 <div class="px-6 py-3">
-                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['status']; ?></span>
+                                                    <div class="badge badge-success gap-2 text-white">
+                                                        <?php echo $row['status']; ?>
+                                                    </div>
+
                                                 </div>
                                             </td>
                                             <td class="size-px whitespace-nowrap" style="width: 60px;">
@@ -608,7 +611,7 @@ $read = $conn->query($dialogread);
 
     // Menambahkan event listener pada tombol "Lihat"
     document.querySelectorAll('.btn-success').forEach(button => {
-        button.addEventListener('click', function () {
+        button.addEventListener('click', function() {
             const rowData = {
                 nama: this.closest('tr').querySelector('td:nth-child(2) span').textContent,
                 jeniskelamin: this.closest('tr').querySelector('td:nth-child(3) span').textContent,

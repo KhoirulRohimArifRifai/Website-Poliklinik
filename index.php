@@ -16,70 +16,13 @@ session_start();
         <link rel="stylesheet" href="css/styles.css">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
+        <script src="./node_modules/preline/dist/preline.js"></script>
     </head>
 
     <body>
         <!-- header -->
-        <div class="navbar bg-base-100 navbar fixed top-0 left-0 w-full z-50 border-b-4 border-blue-500">
-            <div class="navbar-start lg:pl-24 ">
-                <a href="#home">
-                    <img src="images/logoo.png" alt="logo" class="img-fluid m-4">
-                </a>
-                <!-- navbar small -->
-                <div class="navbar-end lg:hidden flex justify-end">
-                    <div class="dropdown navbar-end lg:hidden">
-                        <div tabindex="0" role="button" class="btn btn-ghost hidden">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-5 w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M4 6h16M4 12h8m-8 6h16" />
-                            </svg>
-                        </div>
-                        <ul
-                            tabindex="0"
-                            class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-                            <li><a>Beranda</a></li>
-                            <details>
-                                <summary>Layanan</summary>
-                                <ul class="p-2">
-                                    <li><a>Konsultasi Dokter</a></li>
-                                    <li><a>Informasi Obat Obatan</a></li>
-                                    <li><a>Jadwal Dokter</a></li>
-                                </ul>
-                            </details>
-                            <li><a>Blog Kesehatan</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- navbar mode lg -->
-            <div class="navbar-end lg:pr-28 hidden lg:flex">
-                <ul class="menu menu-horizontal px-1">
-                    <li><a class="text-lg hover:text-white hover:bg-info p-2 rounded" href="#home">Beranda</a></li>
-                        <li><a class="text-lg hover:text-white hover:bg-info p-2 rounded" href="daftarpasien.php">Registrasi Pasien</a></li>
-                    <li>
-                        <details>
-                            <summary class="text-lg hover:text-white hover:bg-info p-2 rounded">Layanan</summary>
-                            <ul class="p-2">
-                                <li><a class="text-md hover:text-white hover:bg-info p-2 rounded">Konsultasi Dokter</a></li>
-                                <li><a class="text-md hover:text-white hover:bg-info p-2 rounded">Informasi Obat Obatan</a></li>
-                                <li><a class="text-md hover:text-white hover:bg-info p-2 rounded">Jadwal Dokter</a></li>
-                            </ul>
-                        </details>
-                    </li>
-                    <li><a href="blog.php" class="text-lg hover:text-white hover:bg-info p-2 rounded">Blog Kesehatan</a></li>
-                </ul>
-            </div>
-        </div>
+        <!-- Menyisipkan Navbar -->
+        <?php include 'navbar.php'; ?>
         <!--endheader-->
 
         <!-- Hero 1 -->
@@ -147,14 +90,14 @@ session_start();
                 <!-- End Grid -->
 
                 <!-- Grid -->
-                <div class="grid grid-cols-3 md:grid-cols-5 gap-x-6 sm:gap-x-6">
-                    <img class="py-3 lg:py-5 w-16 h-auto md:w-20 lg:w-28 mx-auto text-gray-500 dark:text-neutral-500" src="images/client/mandiri.png" alt="description of the image">
-                    <img class="py-3 lg:py-1 w-16 h-auto md:w-20 lg:w-28 mx-auto text-gray-500 dark:text-neutral-500" src="images/client/bri.png" alt="description of the image">
-                    <img class="py-3 lg:py-5 w-16 h-auto md:w-20 lg:w-28 mx-auto text-gray-500 dark:text-neutral-500" src="images/client/bni.png" alt="description of the image">
-                    <img class="py-3 lg:py-1 w-16 h-auto md:w-20 lg:w-28 mx-auto text-gray-500 dark:text-neutral-500" src="images/client/bca.png" alt="description of the image">
-                    <img class="py-3 lg:py-1 w-16 h-auto md:w-20 lg:w-32 mx-auto text-gray-500 dark:text-neutral-500" src="images/client/cimb.png" alt="description of the image">
-
+                <div class="hidden sm:grid grid-cols-3 md:grid-cols-5 gap-x-6 sm:gap-x-6">
+                    <img class="py-3 lg:py-5 w-16 h-auto md:w-20 lg:w-28 mx-auto text-gray-500 dark:text-neutral-500" src="images/client/mandiri.png" alt="Mandiri">
+                    <img class="py-3 lg:py-1 w-16 h-auto md:w-20 lg:w-28 mx-auto text-gray-500 dark:text-neutral-500" src="images/client/bri.png" alt="BRI">
+                    <img class="py-3 lg:py-5 w-16 h-auto md:w-20 lg:w-28 mx-auto text-gray-500 dark:text-neutral-500" src="images/client/bni.png" alt="BNI">
+                    <img class="py-3 lg:py-1 w-16 h-auto md:w-20 lg:w-28 mx-auto text-gray-500 dark:text-neutral-500" src="images/client/bca.png" alt="BCA">
+                    <img class="py-3 lg:py-1 w-16 h-auto md:w-20 lg:w-32 mx-auto text-gray-500 dark:text-neutral-500" src="images/client/cimb.png" alt="CIMB">
                 </div>
+
                 <!-- End Grid -->
             </div>
             <!-- End Clients -->

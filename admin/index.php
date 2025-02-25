@@ -1,3 +1,9 @@
+<?php
+include "../koneksi.php";
+// Gunakan middleware
+require_once 'auth.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -66,7 +72,7 @@
     <link rel="stylesheet" href="https://preline.co/assets/css/main.min.css">
 </head>
 
-<body class="bg-gray-50 dark:bg-neutral-900">
+<body>
     <!-- ========== HEADER & SIDEBAR ========== -->
     <?php
     include 'sidebar.php';
@@ -75,10 +81,118 @@
 
     <!-- Content -->
     <div class="w-full h-full lg:ps-72 mt-2">
-    <div id="scrollspy" class="space-y-10 md:space-y-16">
-      <div id="dashboard" class="min-h-[25rem] scroll-mt-24">
-        <h2 class="text-lg font-semibold text-gray-800 dark:text-white ">Dashboard</h2>
-      </div>
+        <div id="dashboard" class="h-full scroll-mt-24 m-4">
+            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Dashboard</h2>
+        </div>
+        <div class="flex flex-col md:flex-row md:gap-x-4 mx-4 lg:gap-x-4 justify-center">
+            <!-- card1 -->
+            <div class="card bg-base-100 w-full md:w-80 shadow-xl mx-auto">
+                <div class="flex justify-between items-center">
+                    <div class="m-8">
+                        <i class="fa-solid fa-user" style="width: 96px; height: 96px; font-size: 96px;"></i>
+
+                    </div>
+                    <div class="m-8 text-center">
+                        <h2 class="text-xl font-bold -ml-12">Total Pasien</h2>
+                        <?php
+                        // Query untuk menghitung jumlah data di tabel
+                        $query = "SELECT COUNT(*) AS total_results FROM pasien"; // Ganti 'nama_tabel' dengan nama tabel yang sesuai
+                        $result = mysqli_query($conn, $query); // Ganti $koneksi dengan koneksi database Anda
+
+                        // Ambil hasil jumlah data
+                        $row = mysqli_fetch_assoc($result);
+                        $total_results = $row['total_results'];
+                        ?>
+                        <div>
+                            <p class="text-6xl font-bold text-gray-600 dark:text-neutral-400 -ml-12">
+                                <span class="font-semibold text-gray-800 dark:text-neutral-200"><?php echo $total_results; ?></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <a href="datapasien.php">
+                    <div class="card-body flex flex-row justify-center items-center bg-info rounded-b-2xl py-2 cursor-pointer mt-2">
+                        <div class="flex flex-row items-center">
+                            <h2 class="card-title text-center text-white text-xs sm:text-sm lg:text-xs">Lihat Detail</h2>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);">
+                                <path d="m11.293 17.293 1.414 1.414L19.414 12l-6.707-6.707-1.414 1.414L15.586 11H6v2h9.586z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- card2 -->
+            <div class="card bg-base-100 w-full md:w-80 shadow-xl mx-auto">
+                <div class="flex justify-between items-center">
+                    <div class="m-8">
+                        <i class="fa-solid fa-user-doctor" style="width: 96px; height: 96px; font-size: 96px;"></i>
+                    </div>
+                    <div class="m-8 text-center">
+                        <h2 class="text-xl font-bold -ml-12">Total Dokter</h2>
+                        <?php
+                        // Query untuk menghitung jumlah data di tabel
+                        $query = "SELECT COUNT(*) AS total_results FROM dokter"; // Ganti 'nama_tabel' dengan nama tabel yang sesuai
+                        $result = mysqli_query($conn, $query); // Ganti $koneksi dengan koneksi database Anda
+
+                        // Ambil hasil jumlah data
+                        $row = mysqli_fetch_assoc($result);
+                        $total_results = $row['total_results'];
+                        ?>
+                        <div>
+                            <p class="text-6xl font-bold text-gray-600 dark:text-neutral-400 -ml-12">
+                                <span class="font-semibold text-gray-800 dark:text-neutral-200"><?php echo $total_results; ?></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <a href="datadokter.php">
+                    <div class="card-body flex flex-row justify-center items-center bg-info rounded-b-2xl py-2 cursor-pointer mt-2">
+                        <div class="flex flex-row items-center">
+                            <h2 class="card-title text-center text-white text-xs sm:text-sm lg:text-xs">Lihat Detail</h2>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);">
+                                <path d="m11.293 17.293 1.414 1.414L19.414 12l-6.707-6.707-1.414 1.414L15.586 11H6v2h9.586z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- card3 -->
+            <div class="card bg-base-100 w-full md:w-80 shadow-xl mx-auto">
+                <div class="flex justify-between items-center">
+                    <div class="m-8">
+                        <i class="fa-solid fa-user-astronaut" style="width: 96px; height: 96px; font-size: 96px;"></i>
+                    </div>
+                    <div class="m-8 text-center">
+                        <h2 class="text-xl font-bold -ml-12">Total Admin</h2>
+                        <?php
+                        // Query untuk menghitung jumlah data di tabel
+                        $query = "SELECT COUNT(*) AS total_results FROM tb_admin"; // Ganti 'nama_tabel' dengan nama tabel yang sesuai
+                        $result = mysqli_query($conn, $query); // Ganti $koneksi dengan koneksi database Anda
+
+                        // Ambil hasil jumlah data
+                        $row = mysqli_fetch_assoc($result);
+                        $total_results = $row['total_results'];
+                        ?>
+                        <div>
+                            <p class="text-6xl font-bold text-gray-600 dark:text-neutral-400 -ml-12">
+                                <span class="font-semibold text-gray-800 dark:text-neutral-200"><?php echo $total_results; ?></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <a href="dataadmin.php">
+                    <div class="card-body flex flex-row justify-center items-center bg-info rounded-b-2xl py-2 cursor-pointer mt-2">
+                        <div class="flex flex-row items-center">
+                            <h2 class="card-title text-center text-white text-xs sm:text-sm lg:text-xs">Lihat Detail</h2>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);">
+                                <path d="m11.293 17.293 1.414 1.414L19.414 12l-6.707-6.707-1.414 1.414L15.586 11H6v2h9.586z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
     </div>
     <!-- End Content -->
 

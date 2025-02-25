@@ -64,7 +64,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-
+// Cek apakah request menggunakan AJAX untuk mengambil data
+if (isset($_GET['getData']) && isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $query = "SELECT * FROM tb_admin WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $data = $result->fetch_assoc();
+    echo json_encode($data);
+    exit();
+}
 
 
 ?>
@@ -100,10 +111,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-
-
 
     <!-- Title -->
     <title>Manajemen Data Admin</title>
@@ -189,7 +196,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                                                     <div class="p-4 sm:p-7">
                                                         <div class="text-center">
-                                                            <h3 id="hs-modal-signin-label" class="block text-2xl font-bold text-gray-800 dark:text-neutral-200">Tambah Data Pasien</h3>
+                                                            <h3 id="hs-modal-signin-label" class="block text-2xl font-bold text-gray-800 dark:text-neutral-200">Tambah Data Admin</h3>
                                                         </div>
 
                                                         <div class="mt-5">
@@ -354,6 +361,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             </table>
                             <!-- End Table -->
 
+
+
                             <!-- Footer -->
                             <div class="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-t border-gray-200 dark:border-neutral-700">
                                 <?php
@@ -398,6 +407,31 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </div>
     </div>
     <!-- End Content -->
+    <!-- Modal Edit -->
+    <div id="editModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md p-6">
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-neutral-200 mb-4">Edit Data Admin</h3>
+                <form id="editForm" action="dataadmin.php" method="POST">
+                    <input type="hidden" name="id" id="edit-id">
+                    <div class="mb-4">
+                        <label for="edit-nama" class="block text-sm font-medium text-gray-700 dark:text-white">Nama Admin</label>
+                        <input type="text" name="nama" id="edit-nama" class="py-2 px-3 border rounded-lg w-full">
+                    </div>
+                    <div class="mb-4">
+                        <label for="edit-username" class="block text-sm font-medium text-gray-700 dark:text-white">Username</label>
+                        <input type="text" name="username" id="edit-username" class="py-2 px-3 border rounded-lg w-full">
+                    </div>
+                    <div class="mb-4">
+                        <label for="edit-email" class="block text-sm font-medium text-gray-700 dark:text-white">Email</label>
+                        <input type="email" name="email" id="edit-email" class="py-2 px-3 border rounded-lg w-full">
+                    </div>
+                    <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">Simpan Perubahan</button>
+                    <button type="button" id="closeModal" class="ml-2 bg-gray-400 text-white py-2 px-4 rounded-lg hover:bg-gray-500">Batal</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 
 <script>
@@ -417,7 +451,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     });
 
+    document.addEventListener('DOMContentLoaded', function() {
+        // Event Listener untuk tombol edit
+        document.querySelectorAll('button[id^="btedit-"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.id.split('-')[1]; // Ambil ID dari tombol
 
+                // Fetch data dengan AJAX
+                fetch(`?getData=true&id=${id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Isi data pada form modal
+                        document.getElementById('edit-id').value = data.id;
+                        document.getElementById('edit-nama').value = data.nama;
+                        document.getElementById('edit-username').value = data.username;
+                        document.getElementById('edit-email').value = data.email;
+
+                        // Tampilkan modal
+                        document.getElementById('editModal').classList.remove('hidden');
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+        // Event Listener untuk tombol close modal
+        document.getElementById('closeModal').addEventListener('click', function() {
+            document.getElementById('editModal').classList.add('hidden');
+        });
+    });
     // document.getElementById("buttondaftar").addEventListener("click", function(event) {
     //     // Mencegah form submit default jika diperlukan
     //     event.preventDefault();
