@@ -61,8 +61,8 @@
                         </summary>
                         <ul class="ml-4 mt-2 space-y-2 transition duration-300 ease-in-out transform origin-top-right group-open:scale-100 scale-0">
                             <li><a class="block text-gray-700 hover:text-blue-600 transition">Konsultasi Dokter</a></li>
-                            <li><a class="block text-gray-700 hover:text-blue-600 transition">Informasi Obat Obatan</a></li>
-                            <li><a class="block text-gray-700 hover:text-blue-600 transition">Jadwal Dokter</a></li>
+                            <li><a href="obat.php" class="block text-gray-700 hover:text-blue-600 transition">Informasi Obat Obatan</a></li>
+                            <li><a href="dokter.php" class="block text-gray-700 hover:text-blue-600 transition">Jadwal Dokter</a></li>
                         </ul>
                     </details>
                 </li>
@@ -85,8 +85,8 @@
                     <summary class="text-lg hover:text-white hover:bg-info p-2 rounded">Layanan</summary>
                     <ul class="p-2">
                         <li><a class="text-md hover:text-white hover:bg-info p-2 rounded">Konsultasi Dokter</a></li>
-                        <li><a class="text-md hover:text-white hover:bg-info p-2 rounded">Informasi Obat Obatan</a></li>
-                        <li><a class="text-md hover:text-white hover:bg-info p-2 rounded">Jadwal Dokter</a></li>
+                        <li><a href="obat.php" class="text-md hover:text-white hover:bg-info p-2 rounded">Informasi Obat Obatan</a></li>
+                        <li><a href="dokter.php" class="text-md hover:text-white hover:bg-info p-2 rounded">Jadwal Dokter</a></li>
                     </ul>
                 </details>
             </li>

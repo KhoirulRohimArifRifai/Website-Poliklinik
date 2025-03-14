@@ -4,67 +4,93 @@ include "../koneksi.php";
 // Periksa apakah form telah disubmit
 
 
+// Cek apakah form disubmit
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Ambil data dari form
     $namaobat = $_POST['nama'];
     $jenisobat = $_POST['jenis'];
     $dosis = $_POST['dosis'];
     $ukuranobat = $_POST['ukuran'];
-    $gambar = $_POST['gambar'];
     $deskripsi = $_POST['deskripsi'];
 
+    // Proses upload gambar
+    $targetDir = "../imageobat/";
+    $fileName = basename($_FILES["gambar"]["name"]);
+    $targetFilePath = $targetDir . $fileName;
+    $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
 
-    // Query untuk insert data ke tabel dokter
-    $sql = "INSERT INTO obat (nama_obat, jenis_obat, dosis, ukuran_obat, gambar_obat, deskripsi) 
-            VALUES (?, ?, ?, ?, ?, ?)";
+    // Validasi jenis file gambar
+    $allowedTypes = array('jpg', 'jpeg', 'png', 'gif');
+    if (in_array($fileType, $allowedTypes)) {
+        // Pindahkan file ke folder imageobat
+        if (move_uploaded_file($_FILES["gambar"]["tmp_name"], $targetFilePath)) {
+            // Jika upload berhasil, simpan data ke database
+            $sql = "INSERT INTO obat (nama_obat, jenis_obat, dosis, ukuran_obat, gambar_obat, deskripsi) 
+                    VALUES (?, ?, ?, ?, ?, ?)";
 
-    // Siapkan statement
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssss", $namaobat, $jenisobat, $dosis, $ukuranobat, $gambar, $deskripsi);
+            // Siapkan statement
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssssss", $namaobat, $jenisobat, $dosis, $ukuranobat, $fileName, $deskripsi);
 
-    // Eksekusi query
-    if ($stmt->execute()) {
-        echo "
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css'>
-            <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-        </head>
-        <body>
+            // Eksekusi query
+            if ($stmt->execute()) {
+                echo "
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css'>
+                    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+                </head>
+                <body>
+                    <script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Data obat berhasil ditambahkan!',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location = 'dataobat.php';
+                        });
+                    </script>
+                </body>
+                </html>";
+            } else {
+                echo "
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css'>
+                    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+                </head>
+                <body>
+                    <script>
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan: " . addslashes($conn->error) . "',
+                            confirmButtonText: 'Coba Lagi'
+                        }).then(() => {
+                            window.history.back();
+                        });
+                    </script>
+                </body>
+                </html>";
+            }
+
+            $stmt->close();
+        } else {
+            echo "
             <script>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: 'Data dokter berhasil ditambahkan!',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    window.location = 'dataobat.php';
-                });
-            </script>
-        </body>
-        </html>";
+                alert('Gagal mengupload gambar.');
+                window.history.back();
+            </script>";
+        }
     } else {
         echo "
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css'>
-            <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-        </head>
-        <body>
-            <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: 'Terjadi kesalahan: " . addslashes($conn->error) . "',
-                    confirmButtonText: 'Coba Lagi'
-                }).then(() => {
-                    window.history.back();
-                });
-            </script>
-        </body>
-        </html>";
+        <script>
+            alert('Format file tidak didukung. Gunakan JPG, JPEG, PNG, atau GIF.');
+            window.history.back();
+        </script>";
     }
 }
 $sql = "SELECT * FROM poli"; // Ganti 'poli' dengan nama tabel Anda
@@ -73,6 +99,18 @@ $result = $conn->query($sql);
 $dialogread = "SELECT * FROM dokter";
 $read = $conn->query($dialogread);
 
+// Cek apakah request menggunakan AJAX untuk mengambil data
+if (isset($_GET['getData']) && isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $query = "SELECT * FROM obat WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $data = $result->fetch_assoc();
+    echo json_encode($data);
+    exit();
+}
 
 
 ?>
@@ -179,103 +217,92 @@ $read = $conn->query($dialogread);
                                         </button>
 
                                         <div class="text-center">
-                                            <button type="button" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none" aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-cookies" data-hs-overlay="#hs-cookies">
+                                            <button type="button"
+                                                class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                                                onclick="my_modal_3.showModal()"
+                                                aria-haspopup="dialog"
+                                                aria-expanded="false">
                                                 <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M5 12h14" />
                                                     <path d="M12 5v14" />
                                                 </svg>
                                                 Tambah Data
                                             </button>
+
                                         </div>
-
-                                        <div id="hs-cookies" class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto" role="dialog" tabindex="-1" aria-labelledby="hs-cookies-label">
-                                            <div class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto">
-                                                <div class="relative flex flex-col bg-white shadow-lg rounded-xl dark:bg-neutral-900">
-                                                    <div class="absolute top-2 end-2">
-                                                        <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-neutral-400 dark:focus:bg-neutral-600" aria-label="Close" data-hs-overlay="#hs-cookies">
-                                                            <span class="sr-only">Close</span>
-                                                            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                <path d="M18 6 6 18" />
-                                                                <path d="m6 6 12 12" />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-
-                                                    <div class="p-4 sm:p-7">
-                                                        <div class="text-center">
-                                                            <h3 id="hs-modal-signin-label" class="block text-2xl font-bold text-gray-800 dark:text-neutral-200">Tambah Data Obat</h3>
-                                                        </div>
-
-                                                        <div class="mt-5">
-                                                            <!-- Form -->
-                                                            <form id="form-pasien" action="dataobat.php" method="POST">
-                                                                <div class="grid gap-y-4">
-                                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                                                                        <div>
-                                                                            <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Obat</label>
-                                                                            <input type="text" name="nama" id="nama" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                        </div>
-                                                                        <div>
-                                                                            <label for="jenis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jenis Obat</label>
-                                                                            <select name="jenis" id="jenis" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                                <option value="" disabled selected>Pilih Jenis Obat</option>
-                                                                                <option value="tablet">Tablet</option>
-                                                                                <option value="cair">Cair</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                                                                        <div>
-                                                                            <label for="dosis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Dosis Obat</label>
-                                                                            <input type="text" name="dosis" id="dosis" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                        </div>
-                                                                        <div>
-                                                                            <label for="ukuran" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Ukuran Obat</label>
-                                                                            <input type="text" name="ukuran" id="ukuran" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <div>
-                                                                            <label for="gambar" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Gambar Obat</label>
-                                                                            <div class="relative">
-                                                                                <input type="file" name="gambar" id="gambar" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required>
-                                                                                <div class="py-3 px-4 w-full border border-gray-200 rounded-lg text-sm text-neutral-400 bg-white dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
-                                                                                    <span id="file-name">Pilih Gambar...</span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <script>
-                                                                            const fileInput = document.getElementById('gambar');
-                                                                            const fileName = document.getElementById('file-name');
-
-                                                                            fileInput.addEventListener('change', function() {
-                                                                                if (this.files.length > 0) {
-                                                                                    fileName.textContent = this.files[0].name;
-                                                                                } else {
-                                                                                    fileName.textContent = "Pilih Gambar...";
-                                                                                }
-                                                                            });
-                                                                        </script>
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <label for="hs-feedback-post-comment-textarea-1" class="block mb-2 text-sm font-medium dark:text-white">Deskripsi Obat</label>
-                                                                        <div class="mt-1">
-                                                                            <textarea id="deskripsi" name="deskripsi" rows="3" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"></textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="submit" id="buttondaftar" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">Tambah Data</button>
+                                        <!-- Modal dengan DaisyUI -->
+                                        <dialog id="my_modal_3" class="modal">
+                                            <div class="modal-box">
+                                                <form method="dialog">
+                                                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                                </form>
+                                                <h3 class="text-lg font-bold">Tambah Data Pasien</h3>
+                                                <div class="mt-5">
+                                                    <form id="form-pasien" action="dataobat.php" method="POST" enctype="multipart/form-data">
+                                                        <div class="grid gap-y-4">
+                                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                                                                <div>
+                                                                    <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Obat</label>
+                                                                    <input type="text" name="nama" id="nama" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
                                                                 </div>
-                                                            </form>
-                                                            <!-- End Form -->
+                                                                <div>
+                                                                    <label for="jenis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jenis Obat</label>
+                                                                    <select name="jenis" id="jenis" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+                                                                        <option value="" disabled selected>Pilih Jenis Obat</option>
+                                                                        <option value="tablet">Tablet</option>
+                                                                        <option value="cair">Cair</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                                                                <div>
+                                                                    <label for="dosis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Dosis Obat</label>
+                                                                    <input type="text" name="dosis" id="dosis" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+                                                                </div>
+                                                                <div>
+                                                                    <label for="ukuran" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Ukuran Obat</label>
+                                                                    <input type="text" name="ukuran" id="ukuran" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+                                                                </div>
+                                                            </div>
+
+                                                            <div>
+                                                                <div>
+                                                                    <label for="gambar" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Gambar Obat</label>
+                                                                    <div class="relative">
+                                                                        <input type="file" name="gambar" id="gambar" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required>
+                                                                        <div class="input input-bordered input-info py-3 px-4 w-full border border-gray-200 rounded-lg text-sm text-neutral-400 bg-white dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+                                                                            <span id="file-name">Pilih Gambar...</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <script>
+                                                                    const fileInput = document.getElementById('gambar');
+                                                                    const fileName = document.getElementById('file-name');
+
+                                                                    fileInput.addEventListener('change', function() {
+                                                                        if (this.files.length > 0) {
+                                                                            fileName.textContent = this.files[0].name;
+                                                                        } else {
+                                                                            fileName.textContent = "Pilih Gambar...";
+                                                                        }
+                                                                    });
+                                                                </script>
+                                                            </div>
+
+                                                            <div>
+                                                                <label for="hs-feedback-post-comment-textarea-1" class="block mb-2 text-sm font-medium dark:text-white">Deskripsi Obat</label>
+                                                                <div class="mt-1">
+                                                                    <textarea id="deskripsi" name="deskripsi" rows="3" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <button type="submit" id="buttondaftar" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">Tambah Data</button>
                                                         </div>
-                                                    </div>
+                                                    </form>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </dialog>
                                     </div>
                                 </div>
                             </div>
@@ -356,7 +383,7 @@ $read = $conn->query($dialogread);
                                                     <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['jenis_obat']; ?></span>
                                                 </div>
                                             </td>
-                                            <td class="size-px whitespace-nowrap"style="width: 100px;">
+                                            <td class="size-px whitespace-nowrap" style="width: 100px;">
                                                 <div class="px-6 py-3">
                                                     <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['dosis']; ?></span>
                                                 </div>
@@ -368,11 +395,15 @@ $read = $conn->query($dialogread);
                                             </td>
                                             <td class="size-px whitespace-nowrap">
                                                 <div class="px-6 py-1.5">
-                                                    <button class="btn btn-success" aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-notifications" data-hs-overlay="#hs-notifications">
+                                                    <!-- Tombol Lihat -->
+                                                    <button class="btn btn-success" id="btlihat-<?php echo $row['id']; ?>">
                                                         <i class="fa-solid fa-eye" style="color: #ffffff;"></i>
                                                     </button>
 
-                                                    <button class="btn btn-warning"><i class="fa-solid fa-pen-to-square" style="color: #ffffff;"></i></button>
+                                                    <!-- Tombol Edit -->
+                                                    <button class="btn btn-warning" id="btedit-<?php echo $row['id']; ?>">
+                                                        <i class="fa-solid fa-pen-to-square" style="color: #ffffff;"></i>
+                                                    </button>
                                                     <button class="btn btn-error"><i class="fa-solid fa-trash-can" style="color: #ffffff;"></i></button>
                                                 </div>
                                             </td>
@@ -429,56 +460,115 @@ $read = $conn->query($dialogread);
     </div>
     <!-- End Content -->
 
-    <!-- modal read -->
-    <div id="hs-notifications" class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto" role="dialog" tabindex="-1" aria-labelledby="hs-notifications-label">
-        <div class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto">
-            <div class="relative flex flex-col bg-white border shadow-sm rounded-xl overflow-hidden dark:bg-neutral-900 dark:border-neutral-800">
-                <div class="absolute top-2 end-2">
-                    <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-neutral-400 dark:focus:bg-neutral-600" aria-label="Close" data-hs-overlay="#hs-notifications">
-                        <span class="sr-only">Close</span>
-                        <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 6 6 18" />
-                            <path d="m6 6 12 12" />
-                        </svg>
-                    </button>
+    <!-- dialog edit data -->
+    <dialog id="editModal" class="modal">
+        <div class="modal-box relative bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" aria-label="Close">
+                    ✕
+                </button>
+            </form>
+            <h3 class="text-lg text-center font-bold text-gray-800 dark:text-neutral-200">
+                Edit Data Admin
+            </h3>
+            <form id="editForm" action="dataobat.php" method="POST" class="mt-4">
+                <input type="hidden" name="id" id="edit-id">
+
+                <div class="mb-4">
+                    <label for="edit-nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Obat</label>
+                    <input type="text" name="nama" id="edit-nama" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
                 </div>
 
-                <div class="p-4 sm:p-10 overflow-y-auto">
-                    <div class="mb-6 text-center">
-                        <h3 id="hs-notifications-label" class="mb-2 text-xl font-bold text-gray-800 dark:text-neutral-200">
-                            Data Dokter
-                        </h3>
-                        <p class="text-gray-500 dark:text-neutral-500">
-                            Informasi Lengkap Data Dokter
-                        </p>
-                    </div>
-                    <div>
-                        <div>
-                            <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Dokter</label>
-                            <input type="text" name="nama" id="nama" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                        <div>
-                            <label for="jeniskelamin" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jenis Kelamin</label>
-                            <input type="text" name="usia" id="usia" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                        </div>
-                        <div>
-                            <label for="usia" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Usia</label>
-                            <input type="text" name="usia" id="usia" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                        </div>
-                    </div>
+                <div class="mb-4">
+                    <label for="edit-jenis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jenis Obat</label>
+                    <input type="text" name="jenis" id="edit-jenis" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
                 </div>
 
-                <div class="flex justify-end items-center gap-x-2 py-3 px-4 bg-gray-50 border-t dark:bg-neutral-950 dark:border-neutral-800">
-                    <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" data-hs-overlay="#hs-notifications">
-                        Cancel
+                <div class="mb-4">
+                    <label for="edit-dosis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Dosis</label>
+                    <input type="text" name="dosis" id="edit-dosis" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                </div>
+
+                <div class="mb-4">
+                    <label for="edit-ukuran" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Ukuran Obat</label>
+                    <input type="text" name="ukuran" id="edit-ukuran" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                </div>
+
+                <div class="mb-4">
+                    <label for="edit-gambar" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Gambar Obat</label>
+                    <input type="file" name="gambar" id="edit-gambar" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                </div>
+
+                <div class="mb-4">
+                    <label for="edit-deskripsi" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Deskripsi</label>
+                    <textarea name="deskripsi" id="edit-deskripsi" rows="4" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"></textarea>
+                </div>
+
+
+                <div class="modal-action">
+                    <button type="submit" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white shadow-sm hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
+                        Simpan Perubahan
                     </button>
+                    <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" onclick="document.getElementById('editModal').close()">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- dialog lihat data -->
+    <dialog id="lihatModal" class="modal">
+        <div class="modal-box relative bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" aria-label="Close">
+                    ✕
+                </button>
+            </form>
+            <h3 class="text-lg text-center font-bold text-gray-800 dark:text-neutral-200">
+                Detail Data Obat
+            </h3>
+            <div class="mt-4 space-y-4">
+                <!-- Nama Obat -->
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Nama Obat:</label>
+                    <p id="lihat-nama" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+
+                <!-- Jenis Obat -->
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Jenis Obat:</label>
+                    <p id="lihat-jenis" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+
+                <!-- Dosis -->
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Dosis:</label>
+                    <p id="lihat-dosis" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+
+                <!-- Ukuran Obat -->
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Ukuran Obat:</label>
+                    <p id="lihat-ukuran" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+
+                <!-- Gambar Obat -->
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Gambar Obat:</label>
+                    <img id="lihat-gambar" class="w-20 h-20 object-cover rounded-md border border-gray-300 dark:border-neutral-700" alt="Gambar Obat">
+                </div>
+
+                <!-- Deskripsi -->
+                <div class="flex items-start">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Deskripsi:</label>
+                    <p id="lihat-deskripsi" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
                 </div>
             </div>
+
+
         </div>
-    </div>
+    </dialog>
 </body>
 
 <script>
@@ -508,6 +598,106 @@ $read = $conn->query($dialogread);
             });
         }
     }
+
+    //jsbtedit
+    document.addEventListener('DOMContentLoaded', function() {
+        // Event Listener untuk tombol edit
+        document.querySelectorAll('button[id^="btedit-"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.id.split('-')[1]; // Ambil ID dari tombol
+
+                // Fetch data dengan AJAX
+                fetch(`?getData=true&id=${id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Isi data pada form modal
+                        document.getElementById('edit-id').value = data.id;
+                        document.getElementById('edit-nama').value = data.nama_obat;
+                        document.getElementById('edit-jenis').value = data.jenis_obat;
+                        document.getElementById('edit-dosis').value = data.dosis;
+                        document.getElementById('edit-ukuran').value = data.ukuran_obat;
+                        document.getElementById('edit-deskripsi').value = data.deskripsi;
+
+                        // Jika ada gambar, tampilkan sebagai preview
+                        if (data.gambar_obat) {
+                            document.getElementById('preview-gambar').src = data.gambar_obat;
+                            document.getElementById('preview-gambar').classList.remove('hidden');
+                        } else {
+                            document.getElementById('preview-gambar').classList.add('hidden');
+                        }
+                        // Tampilkan modal menggunakan method showModal()
+                        document.getElementById('editModal').showModal();
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+        // Event Listener untuk tombol close pada modal
+        document.querySelectorAll('button[aria-label="Close"]').forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('editModal').close();
+            });
+        });
+
+        // Tutup modal saat klik di luar modal-box
+        document.getElementById('editModal').addEventListener('click', function(event) {
+            const modalBox = document.querySelector('.modal-box');
+            if (!modalBox.contains(event.target)) {
+                this.close();
+            }
+        });
+    });
+
+    //js btlihat
+    document.addEventListener('DOMContentLoaded', function() {
+        // Event Listener untuk tombol lihat
+        document.querySelectorAll('button[id^="btlihat-"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.id.split('-')[1]; // Ambil ID dari tombol
+
+                // Fetch data dengan AJAX
+                fetch(`?getData=true&id=${id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Isi data pada modal
+                        document.getElementById('lihat-nama').textContent = data.nama_obat;
+                        document.getElementById('lihat-jenis').textContent = data.jenis_obat;
+                        document.getElementById('lihat-dosis').textContent = data.dosis;
+                        document.getElementById('lihat-ukuran').textContent = data.ukuran_obat;
+                        document.getElementById('lihat-deskripsi').textContent = data.deskripsi;
+
+                        // Menampilkan gambar jika ada
+                        const gambarElement = document.getElementById('lihat-gambar');
+                        if (data.gambar_obat) {
+                            gambarElement.src = data.gambar_obat;
+                            gambarElement.classList.remove('hidden');
+                        } else {
+                            gambarElement.classList.add('hidden');
+                        }
+
+                        // Tampilkan modal menggunakan method showModal()
+                        document.getElementById('lihatModal').showModal();
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+        // Event Listener untuk tombol close pada modal
+        document.querySelectorAll('button[aria-label="Close"]').forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('lihatModal').close();
+            });
+        });
+
+        // Tutup modal saat klik di luar modal-box
+        document.getElementById('lihatModal').addEventListener('click', function(event) {
+            const modalBox = document.querySelector('#lihatModal .modal-box');
+            if (!modalBox.contains(event.target)) {
+                this.close();
+            }
+        });
+    });
+
 
     // document.getElementById("buttondaftar").addEventListener("click", function(event) {
     //     // Mencegah form submit default jika diperlukan

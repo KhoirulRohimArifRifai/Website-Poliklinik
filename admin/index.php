@@ -86,18 +86,17 @@ require_once 'auth.php';
         </div>
         <div class="flex flex-col md:flex-row md:gap-x-4 mx-4 lg:gap-x-4 justify-center">
             <!-- card1 -->
-            <div class="card bg-base-100 w-full md:w-80 shadow-xl mx-auto">
+            <div class="card bg-base-100 w-full md:w-80 shadow-xl mx-auto transition-transform transform hover:-translate-y-2 hover:shadow-2xl">
                 <div class="flex justify-between items-center">
                     <div class="m-8">
                         <i class="fa-solid fa-user" style="width: 96px; height: 96px; font-size: 96px;"></i>
-
                     </div>
                     <div class="m-8 text-center">
                         <h2 class="text-xl font-bold -ml-12">Total Pasien</h2>
                         <?php
                         // Query untuk menghitung jumlah data di tabel
-                        $query = "SELECT COUNT(*) AS total_results FROM pasien"; // Ganti 'nama_tabel' dengan nama tabel yang sesuai
-                        $result = mysqli_query($conn, $query); // Ganti $koneksi dengan koneksi database Anda
+                        $query = "SELECT COUNT(*) AS total_results FROM pasien";
+                        $result = mysqli_query($conn, $query);
 
                         // Ambil hasil jumlah data
                         $row = mysqli_fetch_assoc($result);
@@ -111,7 +110,7 @@ require_once 'auth.php';
                     </div>
                 </div>
                 <a href="datapasien.php">
-                    <div class="card-body flex flex-row justify-center items-center bg-info rounded-b-2xl py-2 cursor-pointer mt-2">
+                    <div class="card-body flex flex-row justify-center items-center bg-info rounded-b-2xl py-2 cursor-pointer mt-2 transition-transform transform hover:scale-105">
                         <div class="flex flex-row items-center">
                             <h2 class="card-title text-center text-white text-xs sm:text-sm lg:text-xs">Lihat Detail</h2>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);">
@@ -121,8 +120,10 @@ require_once 'auth.php';
                     </div>
                 </a>
             </div>
+
             <!-- card2 -->
-            <div class="card bg-base-100 w-full md:w-80 shadow-xl mx-auto">
+            <!-- Card 2 -->
+            <div class="card bg-base-100 w-full md:w-80 shadow-xl mx-auto transition-transform transform hover:-translate-y-2 hover:shadow-2xl">
                 <div class="flex justify-between items-center">
                     <div class="m-8">
                         <i class="fa-solid fa-user-doctor" style="width: 96px; height: 96px; font-size: 96px;"></i>
@@ -130,11 +131,8 @@ require_once 'auth.php';
                     <div class="m-8 text-center">
                         <h2 class="text-xl font-bold -ml-12">Total Dokter</h2>
                         <?php
-                        // Query untuk menghitung jumlah data di tabel
-                        $query = "SELECT COUNT(*) AS total_results FROM dokter"; // Ganti 'nama_tabel' dengan nama tabel yang sesuai
-                        $result = mysqli_query($conn, $query); // Ganti $koneksi dengan koneksi database Anda
-
-                        // Ambil hasil jumlah data
+                        $query = "SELECT COUNT(*) AS total_results FROM dokter";
+                        $result = mysqli_query($conn, $query);
                         $row = mysqli_fetch_assoc($result);
                         $total_results = $row['total_results'];
                         ?>
@@ -146,7 +144,7 @@ require_once 'auth.php';
                     </div>
                 </div>
                 <a href="datadokter.php">
-                    <div class="card-body flex flex-row justify-center items-center bg-info rounded-b-2xl py-2 cursor-pointer mt-2">
+                    <div class="card-body flex flex-row justify-center items-center bg-info rounded-b-2xl py-2 cursor-pointer mt-2 transition-transform transform hover:scale-105">
                         <div class="flex flex-row items-center">
                             <h2 class="card-title text-center text-white text-xs sm:text-sm lg:text-xs">Lihat Detail</h2>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);">
@@ -156,8 +154,9 @@ require_once 'auth.php';
                     </div>
                 </a>
             </div>
-            <!-- card3 -->
-            <div class="card bg-base-100 w-full md:w-80 shadow-xl mx-auto">
+
+            <!-- Card 3 -->
+            <div class="card bg-base-100 w-full md:w-80 shadow-xl mx-auto transition-transform transform hover:-translate-y-2 hover:shadow-2xl">
                 <div class="flex justify-between items-center">
                     <div class="m-8">
                         <i class="fa-solid fa-user-astronaut" style="width: 96px; height: 96px; font-size: 96px;"></i>
@@ -165,11 +164,8 @@ require_once 'auth.php';
                     <div class="m-8 text-center">
                         <h2 class="text-xl font-bold -ml-12">Total Admin</h2>
                         <?php
-                        // Query untuk menghitung jumlah data di tabel
-                        $query = "SELECT COUNT(*) AS total_results FROM tb_admin"; // Ganti 'nama_tabel' dengan nama tabel yang sesuai
-                        $result = mysqli_query($conn, $query); // Ganti $koneksi dengan koneksi database Anda
-
-                        // Ambil hasil jumlah data
+                        $query = "SELECT COUNT(*) AS total_results FROM tb_admin";
+                        $result = mysqli_query($conn, $query);
                         $row = mysqli_fetch_assoc($result);
                         $total_results = $row['total_results'];
                         ?>
@@ -181,7 +177,7 @@ require_once 'auth.php';
                     </div>
                 </div>
                 <a href="dataadmin.php">
-                    <div class="card-body flex flex-row justify-center items-center bg-info rounded-b-2xl py-2 cursor-pointer mt-2">
+                    <div class="card-body flex flex-row justify-center items-center bg-info rounded-b-2xl py-2 cursor-pointer mt-2 transition-transform transform hover:scale-105">
                         <div class="flex flex-row items-center">
                             <h2 class="card-title text-center text-white text-xs sm:text-sm lg:text-xs">Lihat Detail</h2>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);">

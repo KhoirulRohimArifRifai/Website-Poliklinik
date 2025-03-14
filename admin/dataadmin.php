@@ -407,31 +407,89 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
         </div>
     </div>
     <!-- End Content -->
-    <!-- Modal Edit -->
-    <div id="editModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
-        <div class="flex items-center justify-center min-h-screen px-4">
-            <div class="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md p-6">
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-neutral-200 mb-4">Edit Data Admin</h3>
-                <form id="editForm" action="dataadmin.php" method="POST">
-                    <input type="hidden" name="id" id="edit-id">
-                    <div class="mb-4">
-                        <label for="edit-nama" class="block text-sm font-medium text-gray-700 dark:text-white">Nama Admin</label>
-                        <input type="text" name="nama" id="edit-nama" class="py-2 px-3 border rounded-lg w-full">
-                    </div>
-                    <div class="mb-4">
-                        <label for="edit-username" class="block text-sm font-medium text-gray-700 dark:text-white">Username</label>
-                        <input type="text" name="username" id="edit-username" class="py-2 px-3 border rounded-lg w-full">
-                    </div>
-                    <div class="mb-4">
-                        <label for="edit-email" class="block text-sm font-medium text-gray-700 dark:text-white">Email</label>
-                        <input type="email" name="email" id="edit-email" class="py-2 px-3 border rounded-lg w-full">
-                    </div>
-                    <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">Simpan Perubahan</button>
-                    <button type="button" id="closeModal" class="ml-2 bg-gray-400 text-white py-2 px-4 rounded-lg hover:bg-gray-500">Batal</button>
-                </form>
-            </div>
+    <!-- dialog edit data -->
+    <dialog id="editModal" class="modal">
+        <div class="modal-box relative bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" aria-label="Close">
+                    ✕
+                </button>
+            </form>
+            <h3 class="text-lg text-center font-bold text-gray-800 dark:text-neutral-200">
+                Edit Data Admin
+            </h3>
+            <form id="editForm" action="dataadmin.php" method="POST" class="mt-4">
+                <input type="hidden" name="id" id="edit-id">
+
+                <div class="mb-4">
+                    <label for="edit-nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Admin</label>
+                    <input type="text" name="nama" id="edit-nama" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                </div>
+
+                <div class="mb-4">
+                    <label for="edit-username" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Username</label>
+                    <input type="text" name="username" id="edit-username" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                </div>
+
+                <div class="mb-4">
+                    <label for="edit-email" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Email</label>
+                    <input type="email" name="email" id="edit-email" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                </div>
+
+                <div class="modal-action">
+                    <button type="submit" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white shadow-sm hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
+                        Simpan Perubahan
+                    </button>
+                    <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" onclick="document.getElementById('editModal').close()">
+                        Batal
+                    </button>
+                </div>
+            </form>
         </div>
-    </div>
+    </dialog>
+
+    <!-- dialog lihat data -->
+    <dialog id="lihatModal" class="modal">
+        <div class="modal-box relative bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" aria-label="Close">
+                    ✕
+                </button>
+            </form>
+            <h3 class="text-lg text-center font-bold text-gray-800 dark:text-neutral-200">
+                Detail Data Admin
+            </h3>
+            <div class="mt-4 space-y-4">
+                <!-- Nama Admin -->
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Nama Admin:</label>
+                    <p id="lihat-nama" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+
+                <!-- Username -->
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Username:</label>
+                    <p id="lihat-username" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+
+                <!-- Email -->
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Email:</label>
+                    <p id="lihat-email" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+
+                <!-- Password -->
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Password:</label>
+                    <p id="lihat-password" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+            </div>
+
+        </div>
+    </dialog>
+
+
+
 </body>
 
 <script>
@@ -451,6 +509,7 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
         }
     });
 
+    //jsbtedit
     document.addEventListener('DOMContentLoaded', function() {
         // Event Listener untuk tombol edit
         document.querySelectorAll('button[id^="btedit-"]').forEach(button => {
@@ -463,22 +522,75 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
                     .then(data => {
                         // Isi data pada form modal
                         document.getElementById('edit-id').value = data.id;
-                        document.getElementById('edit-nama').value = data.nama;
+                        document.getElementById('edit-nama').value = data.nama_admin;
                         document.getElementById('edit-username').value = data.username;
                         document.getElementById('edit-email').value = data.email;
 
-                        // Tampilkan modal
-                        document.getElementById('editModal').classList.remove('hidden');
+                        // Tampilkan modal menggunakan method showModal()
+                        document.getElementById('editModal').showModal();
                     })
                     .catch(error => console.error('Error:', error));
             });
         });
 
-        // Event Listener untuk tombol close modal
-        document.getElementById('closeModal').addEventListener('click', function() {
-            document.getElementById('editModal').classList.add('hidden');
+        // Event Listener untuk tombol close pada modal
+        document.querySelectorAll('button[aria-label="Close"]').forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('editModal').close();
+            });
+        });
+
+        // Tutup modal saat klik di luar modal-box
+        document.getElementById('editModal').addEventListener('click', function(event) {
+            const modalBox = document.querySelector('.modal-box');
+            if (!modalBox.contains(event.target)) {
+                this.close();
+            }
         });
     });
+
+    //js btlihat
+    document.addEventListener('DOMContentLoaded', function() {
+        // Event Listener untuk tombol lihat
+        document.querySelectorAll('button[id^="btlihat-"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.id.split('-')[1]; // Ambil ID dari tombol
+
+                // Fetch data dengan AJAX
+                fetch(`?getData=true&id=${id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Isi data pada modal
+                        document.getElementById('lihat-nama').textContent = data.nama_admin;
+                        document.getElementById('lihat-username').textContent = data.username;
+                        document.getElementById('lihat-email').textContent = data.email;
+                        document.getElementById('lihat-password').textContent = data.password;
+
+                        // Tampilkan modal menggunakan method showModal()
+                        document.getElementById('lihatModal').showModal();
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+        // Event Listener untuk tombol close pada modal
+        document.querySelectorAll('button[aria-label="Close"]').forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('lihatModal').close();
+            });
+        });
+
+        // Tutup modal saat klik di luar modal-box
+        document.getElementById('lihatModal').addEventListener('click', function(event) {
+            const modalBox = document.querySelector('#lihatModal .modal-box');
+            if (!modalBox.contains(event.target)) {
+                this.close();
+            }
+        });
+    });
+
+
+
     // document.getElementById("buttondaftar").addEventListener("click", function(event) {
     //     // Mencegah form submit default jika diperlukan
     //     event.preventDefault();

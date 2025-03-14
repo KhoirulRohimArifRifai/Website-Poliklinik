@@ -123,6 +123,7 @@ $result = mysqli_query($conn, $query);
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 
+    <script src="https://cdn.jsdelivr.net/npm/preline@latest/dist/preline.min.js"></script>
 
 
     <!-- Apexcharts -->
@@ -173,17 +174,73 @@ $result = mysqli_query($conn, $query);
                                         </button>
 
                                         <div class="text-center">
-                                            <button type="button" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none" aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-cookies" data-hs-overlay="#hs-cookies">
+                                            <button type="button"
+                                                class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                                                onclick="my_modal_3.showModal()"
+                                                aria-haspopup="dialog"
+                                                aria-expanded="false">
                                                 <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M5 12h14" />
                                                     <path d="M12 5v14" />
                                                 </svg>
                                                 Tambah Data
                                             </button>
-                                        </div>
 
+                                        </div>
+                                        <!-- Modal dengan DaisyUI -->
+                                        <dialog id="my_modal_3" class="modal">
+                                            <div class="modal-box">
+                                                <form method="dialog">
+                                                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                                </form>
+                                                <h3 class="text-lg font-bold">Tambah Data Pasien</h3>
+                                                <div class="mt-5">
+                                                    <form id="form-pasien" action="datapoli.php" method="POST">
+                                                        <div class="grid gap-y-4">
+                                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                                                                <div>
+                                                                    <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Poli</label>
+                                                                    <input type="text" name="nama" id="nama" class="input input-bordered input-info w-full max-w-lg" required>
+                                                                </div>
+                                                                <div>
+                                                                    <label for="spesialis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Spesialis</label>
+                                                                    <input type="text" name="spesialis" id="spesialis" class="input input-bordered input-info w-full max-w-lg" required>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                                                                <div class="relative">
+                                                                    <label for="biaya" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Biaya Layanan</label>
+                                                                    <div class="flex items-center">
+                                                                        <span class="absolute left-3 text-gray-500 dark:text-neutral-400">Rp</span>
+                                                                        <input type="text" name="biaya" id="biaya"
+                                                                            class="input input-bordered input-info w-full py-3 px-10 ml-12 rounded-lg text-sm dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                                                            required>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div>
+                                                                    <label for="status" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Status</label>
+                                                                    <input type="text" name="status" id="status" value="Aktif" readonly
+                                                                        class="input input-bordered input-info w-full max-w-lg">
+                                                                </div>
+                                                            </div>
+
+                                                            <div>
+                                                                <label for="deskripsi" class="block mb-2 text-sm font-medium dark:text-white">Deskripsi Poli</label>
+                                                                <textarea id="deskripsi" name="deskripsi" rows="3" class="input input-bordered input-info w-full max-w-lg py-3 px-4 border-gray-200 rounded-lg text-sm dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"></textarea>
+                                                            </div>
+
+                                                            <button type="submit" id="buttondaftar" name="buttondaftar" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50">
+                                                                Tambah Data
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </dialog>
                                         <!-- dialog tambah data -->
-                                        <div id="hs-cookies" class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto" role="dialog" tabindex="-1" aria-labelledby="hs-cookies-label">
+                                        <!-- <div id="hs-cookies" class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto" role="dialog" tabindex="-1" aria-labelledby="hs-cookies-label">
                                             <div class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto">
                                                 <div class="relative flex flex-col bg-white shadow-lg rounded-xl dark:bg-neutral-900">
                                                     <div class="absolute top-2 end-2">
@@ -202,7 +259,6 @@ $result = mysqli_query($conn, $query);
                                                         </div>
 
                                                         <div class="mt-5">
-                                                            <!-- Form -->
                                                             <form id="form-pasien" action="datapoli.php" method="POST">
                                                                 <div class="grid gap-y-4">
                                                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
@@ -250,12 +306,11 @@ $result = mysqli_query($conn, $query);
                                                                     <button type="submit" id="buttondaftar" name="buttondaftar" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">Tambah Data</button>
                                                                 </div>
                                                             </form>
-                                                            <!-- End Form -->
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                             </div>

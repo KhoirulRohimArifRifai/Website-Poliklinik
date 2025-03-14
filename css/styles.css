@@ -1,4 +1,5 @@
 
+@import "./node_modules/preline/variants.css";
 img.img-fluid {
     max-width: 100%; /* Mengatur gambar agar tidak lebih besar dari elemen induknya */
     height: auto; /* Mengatur tinggi gambar agar proporsional sesuai dengan lebarnya */
