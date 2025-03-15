@@ -73,6 +73,18 @@ if (isset($_POST['buttondaftar'])) {
 $query = "SELECT * FROM poli";
 $result = mysqli_query($conn, $query);
 
+// Cek apakah request menggunakan AJAX untuk mengambil data
+if (isset($_GET['getData']) && isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $query = "SELECT * FROM poli WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $data = $result->fetch_assoc();
+    echo json_encode($data);
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -111,6 +123,7 @@ $result = mysqli_query($conn, $query);
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
 
     <!-- Title -->
@@ -228,7 +241,14 @@ $result = mysqli_query($conn, $query);
 
                                                             <div>
                                                                 <label for="deskripsi" class="block mb-2 text-sm font-medium dark:text-white">Deskripsi Poli</label>
-                                                                <textarea id="deskripsi" name="deskripsi" rows="3" class="input input-bordered input-info w-full max-w-lg py-3 px-4 border-gray-200 rounded-lg text-sm dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"></textarea>
+                                                                <div class="mt-1">
+                                                                    <textarea
+                                                                        id="deskripsi"
+                                                                        name="deskripsi"
+                                                                        rows="3"
+                                                                        class="textarea textarea-bordered textarea-info w-full max-w-lg text-sm rounded-lg py-3 px-4 border-gray-200 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                                                                    </textarea>
+                                                                </div>
                                                             </div>
 
                                                             <button type="submit" id="buttondaftar" name="buttondaftar" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50">
@@ -239,78 +259,6 @@ $result = mysqli_query($conn, $query);
                                                 </div>
                                             </div>
                                         </dialog>
-                                        <!-- dialog tambah data -->
-                                        <!-- <div id="hs-cookies" class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto" role="dialog" tabindex="-1" aria-labelledby="hs-cookies-label">
-                                            <div class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto">
-                                                <div class="relative flex flex-col bg-white shadow-lg rounded-xl dark:bg-neutral-900">
-                                                    <div class="absolute top-2 end-2">
-                                                        <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-neutral-400 dark:focus:bg-neutral-600" aria-label="Close" data-hs-overlay="#hs-cookies">
-                                                            <span class="sr-only">Close</span>
-                                                            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                <path d="M18 6 6 18" />
-                                                                <path d="m6 6 12 12" />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-
-                                                    <div class="p-4 sm:p-7">
-                                                        <div class="text-center">
-                                                            <h3 id="hs-modal-signin-label" class="block text-2xl font-bold text-gray-800 dark:text-neutral-200">Tambah Data Pasien</h3>
-                                                        </div>
-
-                                                        <div class="mt-5">
-                                                            <form id="form-pasien" action="datapoli.php" method="POST">
-                                                                <div class="grid gap-y-4">
-                                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                                                                        <div>
-                                                                            <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Poli</label>
-                                                                            <input type="text" name="nama" id="nama" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                        </div>
-                                                                        <div>
-                                                                            <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Spesialis</label>
-                                                                            <input type="text" name="spesialis" id="spesialis" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                                                                        <div class="relative">
-                                                                            <label for="biaya" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Biaya Layanan</label>
-                                                                            <div class="flex items-center">
-                                                                                <span class="absolute left-3 text-gray-500 dark:text-neutral-400">Rp</span>
-                                                                                <input
-                                                                                    type="text"
-                                                                                    name="biaya"
-                                                                                    id="biaya"
-                                                                                    class="py-3 px-10 ml-10 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                                                                                    required>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div>
-                                                                            <label for="status" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Status</label>
-                                                                            <input type="text" name="status" id="status" value="Aktif" readonly
-                                                                                class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
-                                                                        </div>
-
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <div>
-                                                                            <label for="hs-feedback-post-comment-textarea-1" class="block mb-2 text-sm font-medium dark:text-white">Deskripsi Poli</label>
-                                                                            <div class="mt-1">
-                                                                                <textarea id="deskripsi" name="deskripsi" rows="3" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"></textarea>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <button type="submit" id="buttondaftar" name="buttondaftar" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">Tambah Data</button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div> -->
                                     </div>
                                 </div>
                             </div>
@@ -399,9 +347,15 @@ $result = mysqli_query($conn, $query);
                                                 </div>
                                             </td>
                                             <td class="size-px whitespace-nowrap">
-                                                <div class="px-6 py-3">
-                                                    <div class="flex items-center gap-x-3">
-                                                        <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200"><?php echo $row['status']; ?></span>
+                                                <div class="px-4 py-3">
+                                                    <div class="badge gap-2 text-white 
+        <?php echo ($row['status'] == 'Aktif') ? 'badge-success' : 'badge-error'; ?>">
+                                                        <?php if ($row['status'] == 'Aktif') : ?>
+                                                            <i class='bx bx-check text-white'></i>
+                                                        <?php else : ?>
+                                                            <i class='bx bxs-x-circle' style='color:#ffffff'></i>
+                                                        <?php endif; ?>
+                                                        <span class="text-white"><?php echo $row['status']; ?></span>
                                                     </div>
                                                 </div>
                                             </td>
@@ -418,19 +372,9 @@ $result = mysqli_query($conn, $query);
                                                     </button>
 
                                                     <!-- Tombol Hapus -->
-                                                    <!-- Tambahkan data-id pada tombol hapus -->
-                                                    <!-- <form class="deleteForm" action="manajemenpoli/delete.php" method="post">
-                                                        <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-                                                        <button type="button" class="btn btn-error deleteBtn" data-id="<?php echo $row['id']; ?>">
-                                                            <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
-                                                        </button>
-                                                    </form> -->
-                                                    <form action="manajemenpoli/delete.php" method="post" class="inline deleteForm">
-                                                        <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-                                                        <button class="btn btn-error" name="id" value="<?php echo $row['id']; ?>">
-                                                            <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
-                                                        </button>
-                                                    </form>
+                                                    <button class="btn btn-error delete-btn" data-id="<?php echo $row['id']; ?>">
+                                                        <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
+                                                    </button>
                                                 </div>
                                             </td>
 
@@ -486,43 +430,201 @@ $result = mysqli_query($conn, $query);
         </div>
     </div>
     <!-- End Content -->
+
+    <!-- Dialog Edit Poli -->
+    <dialog id="editModal" class="modal">
+        <div class="modal-box">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 class="text-lg font-bold">Edit Data Poli</h3>
+            <div class="mt-5">
+                <form id="editForm">
+                    <input type="hidden" name="id" id="edit-id">
+                    <div class="grid gap-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                            <div>
+                                <label for="edit-nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Poli</label>
+                                <input type="text" name="nama" id="edit-nama" class="input input-bordered input-info py-3 px-4 block w-full" required>
+                            </div>
+                            <div>
+                                <label for="edit-spesialis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Spesialis</label>
+                                <input type="text" name="spesialis" id="edit-spesialis" class="input input-bordered input-info py-3 px-4 block w-full" required>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                            <div>
+                                <label for="edit-biaya" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Biaya</label>
+                                <div class="flex items-center">
+                                    <span class="absolute text-gray-500 dark:text-neutral-400">Rp</span>
+                                    <input type="text" name="biaya" id="edit-biaya"
+                                        class="input input-bordered input-info w-full py-3 px-8 ml-12 rounded-lg text-sm dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                        required>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="edit-status" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Status</label>
+                                <select name="status" id="edit-status" class="input input-bordered input-info py-3 px-4 block w-full" required>
+                                    <option value="Aktif">Aktif</option>
+                                    <option value="Tidak Aktif">Tidak Aktif</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="edit-deskripsi" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Deskripsi</label>
+                            <div class="mt-1">
+                                <textarea
+                                    name="deskripsi"
+                                    id="edit-deskripsi"
+                                    rows="3"
+                                    class="textarea textarea-bordered textarea-info w-full text-sm rounded-lg py-3 px-4"
+                                    required>
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-action mt-4">
+                        <button type="submit" class="py-2 px-3 bg-blue-600 text-white rounded-lg">Simpan Perubahan</button>
+                        <button type="button" class="py-2 px-3 bg-gray-200 rounded-lg" onclick="document.getElementById('editModal').close()">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Dialog Lihat Data Poli -->
+    <dialog id="lihatModal" class="modal">
+        <div class="modal-box">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 class="text-lg font-bold text-center">Detail Data Poli</h3>
+            <div class="mt-4 space-y-4">
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Nama Poli:</label>
+                    <p id="lihat-nama" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Spesialis:</label>
+                    <p id="lihat-spesialis" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Biaya:</label>
+                    <p id="lihat-biaya" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Status:</label>
+                    <p id="lihat-status" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Deskripsi:</label>
+                    <p id="lihat-deskripsi" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
 </body>
 
 <script>
-    // document.getElementById("buttondaftar").addEventListener("click", function(event) {
-    //     // Mencegah form submit default jika diperlukan
-    //     event.preventDefault();
+    //edit
+    document.addEventListener('DOMContentLoaded', function() {
+        // Event Listener untuk tombol edit
+        document.querySelectorAll('button[id^="btedit-"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.id.split('-')[1]; // Ambil ID dari tombol
 
-    //     // Array field wajib diisi
-    //     const requiredFields = ["nama", "spesialis", "biaya"];
-    //     const emptyFields = [];
+                // Fetch data dengan AJAX
+                fetch(`?getData=true&id=${id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Isi data pada form modal
+                        document.getElementById('edit-id').value = data.id;
+                        document.getElementById('edit-nama').value = data.namapoli;
+                        document.getElementById('edit-spesialis').value = data.spesialis;
+                        document.getElementById('edit-biaya').value = data.biaya;
+                        document.getElementById('edit-status').value = data.status;
+                        document.getElementById('edit-deskripsi').value = data.deskripsi;
 
-    //     requiredFields.forEach(fieldId => {
-    //         const field = document.getElementById(fieldId);
-    //         if (field && !field.value.trim()) {
-    //             emptyFields.push(fieldId);
-    //         }
-    //     });
+                        // Tampilkan modal menggunakan method showModal()
+                        document.getElementById('editModal').showModal();
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
 
-    //     // Jika ada lebih dari satu field kosong
-    //     if (emptyFields.length > 0) {
-    //         // Tampilkan SweetAlert jika ada field yang kosong
-    //         Swal.fire({
-    //             icon: 'warning',
-    //             title: 'Oops...',
-    //             text: 'Lengkapi semua formulir.',
-    //         });
-    //     }else {3
-    //         // Jika tidak ada field kosong
-    //         Swal.fire({
-    //             icon: 'success',
-    //             title: 'Berhasil!',
-    //             text: 'Semua formulir sudah lengkap.',
-    //         });
-    //         // Lanjutkan ke proses form submission
-    //         // document.getElementById('form-id').submit(); // Uncomment jika menggunakan form HTML
-    //     }
-    // });
+        // Submit form dengan AJAX & SweetAlert
+        document.getElementById("editForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Mencegah reload halaman
+
+            let formData = new FormData(this);
+
+            fetch('./manajemenpoli/edit.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text()) // Debugging dulu, pakai .text()
+                .then(data => {
+                    console.log("Response dari server:", data); // Lihat isi respons
+                    return JSON.parse(data); // Parsing manual
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        editModal.close();
+                        Swal.fire({
+                            title: "Berhasil!",
+                            text: "Data poli berhasil diperbarui",
+                            icon: "success",
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire("Gagal!", data.message, "error");
+                    }
+                })
+                .catch(error => console.error("Error Fetch:", error));
+
+        });
+
+        // Event Listener untuk tombol lihat
+        document.querySelectorAll('button[id^="btlihat-"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.id.split('-')[1]; // Ambil ID dari tombol
+
+                // Fetch data dengan AJAX
+                fetch(`?getData=true&id=${id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Isi data pada modal
+                        document.getElementById('lihat-nama').textContent = data.namapoli;
+                        document.getElementById('lihat-spesialis').textContent = data.spesialis;
+                        document.getElementById('lihat-biaya').textContent = data.biaya;
+                        document.getElementById('lihat-status').textContent = data.status;
+                        document.getElementById('lihat-deskripsi').textContent = data.deskripsi;
+
+                        // Tampilkan modal menggunakan method showModal()
+                        document.getElementById('lihatModal').showModal();
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+        // Event Listener untuk tombol close pada modal
+        document.querySelectorAll('button[aria-label="Close"]').forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('lihatModal').close();
+            });
+        });
+
+        // Tutup modal saat klik di luar modal-box
+        document.getElementById('lihatModal').addEventListener('click', function(event) {
+            const modalBox = document.querySelector('#lihatModal .modal-box');
+            if (!modalBox.contains(event.target)) {
+                this.close();
+            }
+        });
+    });
+
 
     function confirmDelete() {
         return confirm("Apakah Anda yakin ingin menghapus data ini?");
@@ -536,28 +638,50 @@ $result = mysqli_query($conn, $query);
         this.value = this.value.replace(/[^0-9]/g, '');
     });
 
+    //hapus
     document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll(".deleteForm").forEach(form => {
-            form.addEventListener("submit", function(event) {
-                event.preventDefault(); // Mencegah pengiriman form langsung
+        const deleteButtons = document.querySelectorAll(".delete-btn");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                let id = this.getAttribute("data-id");
 
                 Swal.fire({
-                    title: "Are you sure?",
-                    text: "You won't be able to revert this!",
+                    title: "Apakah Anda yakin?",
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
                     icon: "warning",
                     showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes, delete it!"
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Ya, hapus!",
+                    cancelButtonText: "Batal"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        form.submit(); // Jika dikonfirmasi, kirim form
+                        fetch("./manajemenpoli/delete.php", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                                body: "id=" + id
+                            })
+                            .then(response => response.text())
+                            .then(data => {
+                                Swal.fire({
+                                    title: "Terhapus!",
+                                    text: "Data berhasil dihapus.",
+                                    icon: "success"
+                                }).then(() => {
+                                    location.reload(); // Refresh halaman setelah penghapusan
+                                });
+                            })
+                            .catch(error => {
+                                Swal.fire("Error", "Terjadi kesalahan!", "error");
+                            });
                     }
                 });
             });
         });
     });
-
     //delete
     document.addEventListener("DOMContentLoaded", function() {
         <?php if (isset($_SESSION['success'])) : ?>

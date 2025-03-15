@@ -68,7 +68,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 $sql = "SELECT * FROM poli"; // Ganti 'poli' dengan nama tabel Anda
 $result = $conn->query($sql);
 
-
+// Cek apakah request menggunakan AJAX untuk mengambil data
+if (isset($_GET['getData']) && isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $query = "SELECT * FROM pasien WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $data = $result->fetch_assoc();
+    echo json_encode($data);
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -227,9 +238,10 @@ $result = $conn->query($sql);
                                                                         <?php
                                                                         // Periksa apakah ada data
                                                                         if ($result->num_rows > 0) {
-                                                                            // Loop untuk menampilkan setiap data poli
                                                                             while ($row = $result->fetch_assoc()) {
-                                                                                echo "<option value='" . $row["namapoli"] . "'>" . $row["namapoli"] . "</option>";
+                                                                                if ($row["status"] === "Aktif") { // Pastikan kolom status bernama "status"
+                                                                                    echo "<option value='" . $row["namapoli"] . "'>" . $row["namapoli"] . "</option>";
+                                                                                }
                                                                             }
                                                                         } else {
                                                                             echo "<option disabled>Tidak ada data</option>";
@@ -376,7 +388,7 @@ $result = $conn->query($sql);
                                             <td class="size-px whitespace-nowrap">
                                                 <div class="flex items-center px-6 py-1.5 space-x-2">
                                                     <!-- Tombol Lihat -->
-                                                    <button class="btn btn-success" id="btlihat-<?php echo $row['id']; ?>" data-id="<?php echo $row['id']; ?>">
+                                                    <button class="btn btn-success" id="btlihat-<?php echo $row['id']; ?>">
                                                         <i class="fa-solid fa-eye" style="color: #ffffff;"></i>
                                                     </button>
 
@@ -386,12 +398,9 @@ $result = $conn->query($sql);
                                                     </button>
 
                                                     <!-- Tombol Hapus -->
-                                                    <form id="deleteForm" action="manajemenpoli/delete.php" method="post" class="inline" onsubmit="return confirmDelete(event)">
-                                                        <input type="hidden" name="id">
-                                                        <button class="btn btn-error" name="id" value="<?php echo $row['id']; ?>">
-                                                            <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
-                                                        </button>
-                                                    </form>
+                                                    <button class="btn btn-error delete-btn" data-id="<?php echo $row['id']; ?>">
+                                                        <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
+                                                    </button>
                                                 </div>
                                             </td>
 
@@ -401,63 +410,6 @@ $result = $conn->query($sql);
                                     </tbody>
                             </table>
                             <!-- End Table -->
-
-                            <!-- Modal -->
-                            <div id="hs-notifications" class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto" role="dialog" tabindex="-1" aria-labelledby="hs-notifications-label">
-                                <div class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto">
-                                    <div class="relative flex flex-col bg-white border shadow-sm rounded-xl overflow-hidden dark:bg-neutral-900 dark:border-neutral-800">
-                                        <div class="absolute top-2 end-2">
-                                            <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-neutral-400 dark:focus:bg-neutral-600" aria-label="Close" data-hs-overlay="#hs-notifications">
-                                                <span class="sr-only">Close</span>
-                                                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M18 6 6 18" />
-                                                    <path d="m6 6 12 12" />
-                                                </svg>
-                                            </button>
-                                        </div>
-
-                                        <div class="p-4 sm:p-10 overflow-y-auto">
-                                            <div class="mb-6 text-center">
-                                                <h3 id="hs-notifications-label" class="mb-2 text-xl font-bold text-gray-800 dark:text-neutral-200">
-                                                    Data Pasien
-                                                </h3>
-                                                <p class="text-gray-500 dark:text-neutral-500">
-                                                    Informasi Lengkap Data Pasien
-                                                </p>
-                                            </div>
-
-                                            <div>
-                                                <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Pasien</label>
-                                                <input type="text" name="nama" id="nama" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" disabled>
-                                            </div>
-                                            <div>
-                                                <label for="jeniskelamin" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jenis Kelamin</label>
-                                                <input type="text" name="jeniskelamin" id="jeniskelamin" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" disabled>
-                                            </div>
-                                            <div>
-                                                <label for="umur" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Umur</label>
-                                                <input type="text" name="umur" id="umur" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" disabled>
-                                            </div>
-                                            <div>
-                                                <label for="tgldaftar" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Tanggal Daftar</label>
-                                                <input type="text" name="tgldaftar" id="tgldaftar" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" disabled>
-                                            </div>
-                                            <div>
-                                                <label for="poli" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Poli</label>
-                                                <input type="text" name="poli" id="poli" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" disabled>
-                                            </div>
-                                        </div>
-
-                                        <div class="flex justify-end items-center gap-x-2 py-3 px-4 bg-gray-50 border-t dark:bg-neutral-950 dark:border-neutral-800">
-                                            <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" data-hs-overlay="#hs-notifications">
-                                                Close
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
 
                             <!-- Footer -->
                             <div class="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-t border-gray-200 dark:border-neutral-700">
@@ -503,34 +455,245 @@ $result = $conn->query($sql);
         </div>
     </div>
     <!-- End Content -->
+    <!-- Dialog Edit Pasien -->
+    <dialog id="editModal" class="modal">
+        <div class="modal-box">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 class="text-lg font-bold">Edit Data Pasien</h3>
+            <div class="mt-5">
+                <form id="editForm">
+                    <input type="hidden" name="id" id="edit-id">
+                    <div class="grid gap-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                            <div>
+                                <label for="edit-nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Pasien</label>
+                                <input type="text" name="nama" id="edit-nama" class="input input-bordered input-info py-3 px-4 block w-full" required>
+                            </div>
+                            <div>
+                                <label for="edit-jeniskelamin" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jenis Kelamin</label>
+                                <select name="jeniskelamin" id="edit-jeniskelamin" class="input input-bordered input-info py-3 px-4 block w-full" required>
+                                    <option value="Pria">Pria</option>
+                                    <option value="Wanita">Wanita</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                            <div>
+                                <label for="edit-usia" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Usia</label>
+                                <input type="text" name="usia" id="edit-usia" class="input input-bordered input-info py-3 px-4 block w-full" required>
+                            </div>
+                            <div>
+                                <label for="edit-nomorhp" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">No. HP</label>
+                                <input type="text" name="nomorhp" id="edit-nomorhp" class="input input-bordered input-info py-3 px-4 block w-full" required>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                            <div>
+                                <label for="edit-tanggal" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Tanggal Pelayanan</label>
+                                <input type="date" name="tanggal" id="edit-tanggal" class="input input-bordered input-info py-3 px-4 block w-full" required>
+                            </div>
+                            <div>
+                                <label for="edit-poli" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Pilih Poli</label>
+                                <select name="poli" id="edit-poli" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+                                    <option value="" disabled selected>Pilih Poli</option>
+                                    <?php
+                                    // Query untuk mengambil data dari tabel poli
+                                    $query = "SELECT * FROM poli";
+                                    $result = mysqli_query($conn, $query);
+                                    if (!$result) {
+                                        die("Query gagal: " . $conn->error);
+                                    }
+                                    // Periksa apakah ada data
+                                    if ($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            if ($row["status"] === "Aktif") { // Pastikan kolom status bernama "status"
+                                                echo "<option value='" . $row["namapoli"] . "'>" . $row["namapoli"] . "</option>";
+                                            }
+                                        }
+                                    } else {
+                                        echo "<option disabled>Tidak ada data</option>";
+                                    }
+
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="edit-alamat" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Alamat</label>
+                            <textarea name="alamat" id="edit-alamat" rows="2" class="textarea textarea-bordered textarea-info w-full text-sm rounded-lg" required></textarea>
+                        </div>
+                        <div>
+                            <label for="edit-keluhan" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Keluhan Pasien</label>
+                            <textarea name="keluhan" id="edit-keluhan" rows="2" class="textarea textarea-bordered textarea-info w-full text-sm rounded-lg" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-action mt-4">
+                        <button type="submit" class="py-2 px-3 bg-blue-600 text-white rounded-lg">Simpan Perubahan</button>
+                        <button type="button" class="py-2 px-3 bg-gray-200 rounded-lg" onclick="document.getElementById('editModal').close()">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Dialog Lihat Pasien -->
+    <dialog id="lihatModal" class="modal">
+        <div class="modal-box">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 class="text-lg font-bold text-center">Detail Data Pasien</h3>
+            <div class="mt-4 space-y-4">
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Nama Pasien:</label>
+                    <p id="view-nama" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Jenis Kelamin:</label>
+                    <p id="view-jeniskelamin" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Usia:</label>
+                    <p id="view-usia" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">No. HP:</label>
+                    <p id="view-nomorhp" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Tanggal Daftar Pelayanan:</label>
+                    <p id="view-tgl" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Poli:</label>
+                    <p id="view-poli" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Alamat:</label>
+                    <p id="view-alamat" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+                <div class="flex items-center">
+                    <label class="block text-sm text-gray-700 dark:text-white w-1/3">Keluhan:</label>
+                    <p id="view-keluhan" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
 </body>
 
 <script>
-    // Fungsi untuk menampilkan modal dan mengisi data pasien
-    function showModal(id) {
-        fetch(`get_patient_data.php?id=${id}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data) {
-                    // Isi data ke dalam modal
-                    document.getElementById('nama').value = data.nama;
-                    document.getElementById('jeniskelamin').value = data.jeniskelamin;
-                    document.getElementById('umur').value = data.umur;
-                    document.getElementById('tgldaftar').value = data.tgldaftar;
-                    document.getElementById('poli').value = data.poli;
+    document.addEventListener('DOMContentLoaded', function() {
+        // Event Listener untuk tombol edit
+        document.querySelectorAll('button[id^="btedit-"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.id.split('-')[1]; // Ambil ID dari tombol
 
-                    // Menampilkan modal (menghapus kelas 'hidden')
-                    const modal = document.getElementById('hs-notifications');
-                    modal.classList.remove('hidden');
-                    modal.classList.add('show'); // Menambahkan kelas 'show' jika perlu
-                } else {
-                    console.log('Data pasien tidak ditemukan');
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
+                // Fetch data dengan AJAX
+                fetch(`?getData=true&id=${id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Isi data pada form modal
+                        document.getElementById('edit-id').value = data.id;
+                        document.getElementById('edit-nama').value = data.nama;
+                        document.getElementById('edit-jeniskelamin').value = data.jeniskelamin;
+                        document.getElementById('edit-usia').value = data.umur;
+                        document.getElementById('edit-nomorhp').value = data.nomorhp;
+                        document.getElementById('edit-tanggal').value = data.tgldaftar;
+                        document.getElementById('edit-poli').value = data.poli;
+                        document.getElementById('edit-alamat').value = data.alamat;
+                        document.getElementById('edit-keluhan').value = data.keluhan;
+
+                        // Tampilkan modal menggunakan method showModal()
+                        document.getElementById('editModal').showModal();
+                    })
+                    .catch(error => console.error('Error:', error));
             });
-    }
+        });
+
+        // Submit form dengan AJAX & SweetAlert
+        document.getElementById("editForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Mencegah reload halaman
+
+            let formData = new FormData(this);
+
+            fetch('./manajemenpasien/edit.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text()) // Debugging dulu, pakai .text()
+                .then(data => {
+                    console.log("Response dari server:", data); // Lihat isi respons
+                    return JSON.parse(data); // Parsing manual
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        editModal.close();
+                        Swal.fire({
+                            title: "Berhasil!",
+                            text: "Data pasien berhasil diperbarui",
+                            icon: "success",
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire("Gagal!", data.message, "error");
+                    }
+                })
+                .catch(error => console.error("Error Fetch:", error));
+        });
+
+        // Event Listener untuk tombol lihat
+        document.querySelectorAll('button[id^="btlihat-"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.id.split('-')[1]; // Ambil ID dari tombol
+
+                // Fetch data dengan AJAX
+                fetch(`?getData=true&id=${id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Isi data pada modal
+                        document.getElementById('view-nama').textContent = data.nama;
+                        document.getElementById('view-jeniskelamin').textContent = data.jeniskelamin;
+                        document.getElementById('view-usia').textContent = data.umur;
+                        document.getElementById('view-nomorhp').textContent = data.nomorhp;
+                        document.getElementById('view-tgl').textContent = formatTanggal(data.tgldaftar);
+
+                        function formatTanggal(tanggal) {
+                            let date = new Date(tanggal);
+                            let day = String(date.getDate()).padStart(2, '0');
+                            let month = String(date.getMonth() + 1).padStart(2, '0');
+                            let year = date.getFullYear();
+                            return `${day}/${month}/${year}`;
+                        }
+                        document.getElementById('view-poli').textContent = data.poli;
+                        document.getElementById('view-alamat').textContent = data.alamat;
+                        document.getElementById('view-keluhan').textContent = data.keluhan;
+
+                        // Tampilkan modal menggunakan method showModal()
+                        document.getElementById('lihatModal').showModal();
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+        // Event Listener untuk tombol close pada modal
+        document.querySelectorAll('button[aria-label="Close"]').forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('viewModal').close();
+            });
+        });
+
+        // Tutup modal saat klik di luar modal-box
+        document.getElementById('viewModal').addEventListener('click', function(event) {
+            const modalBox = document.querySelector('#viewModal .modal-box');
+            if (!modalBox.contains(event.target)) {
+                this.close();
+            }
+        });
+    });
 
 
 

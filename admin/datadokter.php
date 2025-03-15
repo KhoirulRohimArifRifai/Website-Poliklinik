@@ -282,15 +282,18 @@ $no = $offset + 1;
                                                                         <?php
                                                                         // Periksa apakah ada data
                                                                         if ($result->num_rows > 0) {
-                                                                            // Loop untuk menampilkan setiap data poli
+                                                                            // Loop untuk menampilkan setiap data poli dengan status "Aktif"
                                                                             while ($row = $result->fetch_assoc()) {
-                                                                                echo "<option value='" . $row["namapoli"] . "'>" . $row["namapoli"] . "</option>";
+                                                                                if ($row["status"] == "Aktif") { // Hanya tampilkan jika status "Aktif"
+                                                                                    echo "<option value='" . $row["namapoli"] . "'>" . $row["namapoli"] . "</option>";
+                                                                                }
                                                                             }
                                                                         } else {
                                                                             echo "<option disabled>Tidak ada data</option>";
                                                                         }
                                                                         ?>
                                                                     </select>
+
                                                                 </div>
                                                                 <div>
                                                                     <label for="status" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Status</label>

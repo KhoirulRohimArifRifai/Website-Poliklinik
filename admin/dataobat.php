@@ -249,8 +249,8 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
                                                                     <label for="jenis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jenis Obat</label>
                                                                     <select name="jenis" id="jenis" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
                                                                         <option value="" disabled selected>Pilih Jenis Obat</option>
-                                                                        <option value="tablet">Tablet</option>
-                                                                        <option value="cair">Cair</option>
+                                                                        <option value="Tablet">Tablet</option>
+                                                                        <option value="Cair">Cair</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -294,8 +294,13 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
                                                             <div>
                                                                 <label for="hs-feedback-post-comment-textarea-1" class="block mb-2 text-sm font-medium dark:text-white">Deskripsi Obat</label>
                                                                 <div class="mt-1">
-                                                                    <textarea id="deskripsi" name="deskripsi" rows="3" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"></textarea>
+                                                                    <textarea
+                                                                        id="deskripsi"
+                                                                        name="deskripsi"
+                                                                        rows="3"
+                                                                        class="textarea textarea-bordered textarea-info w-full text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"></textarea>
                                                                 </div>
+
                                                             </div>
                                                             <button type="submit" id="buttondaftar" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">Tambah Data</button>
                                                         </div>
@@ -404,7 +409,11 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
                                                     <button class="btn btn-warning" id="btedit-<?php echo $row['id']; ?>">
                                                         <i class="fa-solid fa-pen-to-square" style="color: #ffffff;"></i>
                                                     </button>
-                                                    <button class="btn btn-error"><i class="fa-solid fa-trash-can" style="color: #ffffff;"></i></button>
+
+                                                    <!-- Tombol Hapus -->
+                                                    <button class="btn btn-error delete-btn" data-id="<?php echo $row['id']; ?>">
+                                                        <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
+                                                    </button>
                                                 </div>
                                             </td>
 
@@ -462,7 +471,7 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
 
     <!-- dialog edit data -->
     <dialog id="editModal" class="modal">
-        <div class="modal-box relative bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="modal-box ">
             <form method="dialog">
                 <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" aria-label="Close">
                     ✕
@@ -471,55 +480,75 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
             <h3 class="text-lg text-center font-bold text-gray-800 dark:text-neutral-200">
                 Edit Data Admin
             </h3>
-            <form id="editForm" action="dataobat.php" method="POST" class="mt-4">
+            <form id="editForm" action="edit.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="id" id="edit-id">
+                <div class="grid gap-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                        <div>
+                            <label for="edit-nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Obat</label>
+                            <input type="text" name="nama" id="edit-nama" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400" required>
+                        </div>
 
-                <div class="mb-4">
-                    <label for="edit-nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Obat</label>
-                    <input type="text" name="nama" id="edit-nama" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                        <div>
+                            <label for="edit-jenis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jenis Obat</label>
+                            <select name="jenis" id="edit-jenis" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:focus:ring-neutral-600" required>
+                                <option value="" disabled selected>Pilih Jenis</option>
+                                <option value="Tablet">Tablet</option>
+                                <option value="Cair">Cair</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                        <div>
+                            <label for="edit-dosis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Dosis</label>
+                            <input type="text" name="dosis" id="edit-dosis" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400" required>
+                        </div>
+
+                        <div>
+                            <label for="edit-ukuran" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Ukuran Obat</label>
+                            <input type="text" name="ukuran" id="edit-ukuran" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="edit-gambar" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">
+                            Gambar Obat
+                        </label>
+                        <div class="relative">
+                            <input type="file" name="gambar" id="edit-gambar" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                            <div class="input input-bordered input-info py-3 px-4 w-full border border-gray-200 rounded-lg text-sm text-neutral-400 bg-white dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+                                <span id="edit-file-name">Memuat...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="edit-deskripsi" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Deskripsi</label>
+                        <div class="mt-1">
+                            <textarea
+                                name="deskripsi"
+                                id="edit-deskripsi"
+                                rows="4"
+                                class="textarea textarea-bordered textarea-info w-full text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400"
+                                required>
+                            </textarea>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="mb-4">
-                    <label for="edit-jenis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Jenis Obat</label>
-                    <input type="text" name="jenis" id="edit-jenis" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
-                </div>
-
-                <div class="mb-4">
-                    <label for="edit-dosis" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Dosis</label>
-                    <input type="text" name="dosis" id="edit-dosis" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
-                </div>
-
-                <div class="mb-4">
-                    <label for="edit-ukuran" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Ukuran Obat</label>
-                    <input type="text" name="ukuran" id="edit-ukuran" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
-                </div>
-
-                <div class="mb-4">
-                    <label for="edit-gambar" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Gambar Obat</label>
-                    <input type="file" name="gambar" id="edit-gambar" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
-                </div>
-
-                <div class="mb-4">
-                    <label for="edit-deskripsi" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Deskripsi</label>
-                    <textarea name="deskripsi" id="edit-deskripsi" rows="4" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"></textarea>
-                </div>
-
-
-                <div class="modal-action">
-                    <button type="submit" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white shadow-sm hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
-                        Simpan Perubahan
-                    </button>
-                    <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" onclick="document.getElementById('editModal').close()">
-                        Batal
-                    </button>
+                <div class="modal-action mt-4">
+                    <button type="submit" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white shadow-sm hover:bg-blue-700">Simpan Perubahan</button>
+                    <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800" onclick="document.getElementById('editModal').close()">Batal</button>
                 </div>
             </form>
+
         </div>
     </dialog>
 
     <!-- dialog lihat data -->
     <dialog id="lihatModal" class="modal">
-        <div class="modal-box relative bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="modal-box">
             <form method="dialog">
                 <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" aria-label="Close">
                     ✕
@@ -600,16 +629,16 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
     }
 
     //jsbtedit
-    document.addEventListener('DOMContentLoaded', function() {
-        // Event Listener untuk tombol edit
-        document.querySelectorAll('button[id^="btedit-"]').forEach(button => {
-            button.addEventListener('click', function() {
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll("[id^='btedit-']").forEach(button => {
+            button.addEventListener("click", function() {
                 const id = this.id.split('-')[1]; // Ambil ID dari tombol
 
                 // Fetch data dengan AJAX
                 fetch(`?getData=true&id=${id}`)
                     .then(response => response.json())
                     .then(data => {
+                        console.log(data);
                         // Isi data pada form modal
                         document.getElementById('edit-id').value = data.id;
                         document.getElementById('edit-nama').value = data.nama_obat;
@@ -618,33 +647,61 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
                         document.getElementById('edit-ukuran').value = data.ukuran_obat;
                         document.getElementById('edit-deskripsi').value = data.deskripsi;
 
-                        // Jika ada gambar, tampilkan sebagai preview
-                        if (data.gambar_obat) {
-                            document.getElementById('preview-gambar').src = data.gambar_obat;
-                            document.getElementById('preview-gambar').classList.remove('hidden');
-                        } else {
-                            document.getElementById('preview-gambar').classList.add('hidden');
-                        }
-                        // Tampilkan modal menggunakan method showModal()
+                        // Menampilkan nama file gambar dari database
+                        const fileName = document.getElementById('edit-file-name');
+                        fileName.textContent = data.gambar_obat ? data.gambar_obat : "Pilih Gambar...";
+
+                        // Tampilkan modal menggunakan showModal()
                         document.getElementById('editModal').showModal();
                     })
                     .catch(error => console.error('Error:', error));
             });
         });
 
-        // Event Listener untuk tombol close pada modal
-        document.querySelectorAll('button[aria-label="Close"]').forEach(button => {
-            button.addEventListener('click', function() {
-                document.getElementById('editModal').close();
-            });
+        // Event listener untuk mengganti teks saat file dipilih
+        document.getElementById('edit-gambar').addEventListener('change', function() {
+            const fileName = document.getElementById('edit-file-name');
+            if (this.files.length > 0) {
+                fileName.textContent = this.files[0].name;
+            } else {
+                fileName.textContent = "Pilih Gambar...";
+            }
         });
 
-        // Tutup modal saat klik di luar modal-box
-        document.getElementById('editModal').addEventListener('click', function(event) {
-            const modalBox = document.querySelector('.modal-box');
-            if (!modalBox.contains(event.target)) {
-                this.close();
-            }
+        // Handle submit form dengan AJAX dan SweetAlert
+        document.getElementById("editForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Mencegah reload halaman
+
+            let formData = new FormData(this);
+
+            fetch('./manejemenobat/edit.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        document.getElementById('editModal').close(); // Tutup modal setelah submit sukses
+                        Swal.fire({
+                            title: "Berhasil!",
+                            text: "Data obat berhasil diperbarui",
+                            icon: "success",
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload(); // Refresh halaman setelah notifikasi ditutup
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Gagal!",
+                            text: "Gagal memperbarui data obat",
+                            icon: "error"
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
         });
     });
 
@@ -659,6 +716,12 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
                 fetch(`?getData=true&id=${id}`)
                     .then(response => response.json())
                     .then(data => {
+                        console.log(data); // Cek data yang dikirim dari backend
+
+                        // Pastikan properti gambar ada
+                        if (!data.gambar_obat) {
+                            console.error("Gambar tidak tersedia dalam data");
+                        }
                         // Isi data pada modal
                         document.getElementById('lihat-nama').textContent = data.nama_obat;
                         document.getElementById('lihat-jenis').textContent = data.jenis_obat;
@@ -669,11 +732,12 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
                         // Menampilkan gambar jika ada
                         const gambarElement = document.getElementById('lihat-gambar');
                         if (data.gambar_obat) {
-                            gambarElement.src = data.gambar_obat;
+                            gambarElement.src = `../imageobat/${data.gambar_obat}`;
                             gambarElement.classList.remove('hidden');
                         } else {
                             gambarElement.classList.add('hidden');
                         }
+
 
                         // Tampilkan modal menggunakan method showModal()
                         document.getElementById('lihatModal').showModal();
@@ -698,6 +762,57 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
         });
     });
 
+    //hapus
+    document.addEventListener("DOMContentLoaded", function() {
+        const deleteButtons = document.querySelectorAll(".delete-btn");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                let id = this.getAttribute("data-id");
+                console.log("ID yang dikirim:", id); // Debugging
+
+                Swal.fire({
+                    title: "Apakah Anda yakin?",
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Ya, hapus!",
+                    cancelButtonText: "Batal"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch("./manejemenobat/delete.php", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                                body: "id=" + encodeURIComponent(id) // Pastikan ID ter-encode
+                            })
+                            .then(response => response.text())
+                            .then(data => {
+                                console.log("Response dari server:", data); // Debugging
+                                if (data.trim() === "success") {
+                                    Swal.fire({
+                                        title: "Terhapus!",
+                                        text: "Data berhasil dihapus.",
+                                        icon: "success"
+                                    }).then(() => {
+                                        location.reload(); // Refresh halaman setelah penghapusan
+                                    });
+                                } else {
+                                    Swal.fire("Error", "Terjadi kesalahan saat menghapus!", "error");
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Fetch error:", error); // Debugging
+                                Swal.fire("Error", "Terjadi kesalahan!", "error");
+                            });
+                    }
+                });
+            });
+        });
+    });
 
     // document.getElementById("buttondaftar").addEventListener("click", function(event) {
     //     // Mencegah form submit default jika diperlukan

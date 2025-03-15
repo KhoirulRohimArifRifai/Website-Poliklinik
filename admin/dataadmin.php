@@ -2,7 +2,7 @@
 // Include koneksi database
 include '../koneksi.php';
 
-
+//insert
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Ambil data dari form
     $nama = $_POST['nama'];
@@ -63,6 +63,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </html>";
     }
 }
+
+//delete
 
 // Cek apakah request menggunakan AJAX untuk mengambil data
 if (isset($_GET['getData']) && isset($_GET['id'])) {
@@ -172,7 +174,11 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
                                         </button>
 
                                         <div class="text-center">
-                                            <button type="button" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none" aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-cookies" data-hs-overlay="#hs-cookies">
+                                            <button type="button"
+                                                class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                                                onclick="my_modal_3.showModal()"
+                                                aria-haspopup="dialog"
+                                                aria-expanded="false">
                                                 <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M5 12h14" />
                                                     <path d="M12 5v14" />
@@ -180,78 +186,62 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
                                                 Tambah Data
                                             </button>
                                         </div>
-
-                                        <div id="hs-cookies" class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto" role="dialog" tabindex="-1" aria-labelledby="hs-cookies-label">
-                                            <div class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto">
-                                                <div class="relative flex flex-col bg-white shadow-lg rounded-xl dark:bg-neutral-900">
-                                                    <div class="absolute top-2 end-2">
-                                                        <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-neutral-400 dark:focus:bg-neutral-600" aria-label="Close" data-hs-overlay="#hs-cookies">
-                                                            <span class="sr-only">Close</span>
-                                                            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                <path d="M18 6 6 18" />
-                                                                <path d="m6 6 12 12" />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-
-                                                    <div class="p-4 sm:p-7">
-                                                        <div class="text-center">
-                                                            <h3 id="hs-modal-signin-label" class="block text-2xl font-bold text-gray-800 dark:text-neutral-200">Tambah Data Admin</h3>
-                                                        </div>
-
-                                                        <div class="mt-5">
-                                                            <!-- Form -->
-                                                            <form id="form-pasien" action="dataadmin.php" method="POST">
-                                                                <div class="grid gap-y-4">
-                                                                    <div>
-                                                                        <div>
-                                                                            <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Admin</label>
-                                                                            <input type="text" name="nama" id="nama" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div>
-                                                                        <div>
-                                                                            <label for="username" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Username</label>
-                                                                            <input type="text" name="username" id="username" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <div>
-                                                                            <label for="email" class="block text-sm mb-2 dark:text-white">Email</label>
-                                                                            <input type="email" id="email" name="email" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required aria-describedby="email-error">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div>
-                                                                        <div>
-                                                                            <label for="password" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Password</label>
-                                                                            <div class="relative">
-                                                                                <input type="password" name="password" id="password" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
-                                                                                <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 dark:text-neutral-400">
-                                                                                    <!-- Icon for closed eye (password hidden) -->
-                                                                                    <svg id="eyeIconClosed" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
-                                                                                    </svg>
-                                                                                    <!-- Icon for open eye (password visible) -->
-                                                                                    <svg id="eyeIconOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hidden">
-                                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                                                                    </svg>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-
-                                                                    </div>
-
-                                                                    <button type="submit" id="buttondaftar" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">Tambah Data</button>
+                                        <!-- Modal dengan DaisyUI -->
+                                        <dialog id="my_modal_3" class="modal">
+                                            <div class="modal-box">
+                                                <form method="dialog">
+                                                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                                </form>
+                                                <h3 class="text-lg font-bold">Tambah Data Pasien</h3>
+                                                <div class="mt-5">
+                                                    <form id="form-pasien" action="dataadmin.php" method="POST">
+                                                        <div class="grid gap-y-4">
+                                                            <div>
+                                                                <div>
+                                                                    <label for="nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Admin</label>
+                                                                    <input type="text" name="nama" id="nama" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
                                                                 </div>
-                                                            </form>
-                                                            <!-- End Form -->
+                                                            </div>
+                                                            <div>
+                                                                <div>
+                                                                    <label for="username" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Username</label>
+                                                                    <input type="text" name="username" id="username" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+                                                                </div>
+                                                            </div>
+
+                                                            <div>
+                                                                <div>
+                                                                    <label for="email" class="block text-sm mb-2 dark:text-white">Email</label>
+                                                                    <input type="email" id="email" name="email" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required aria-describedby="email-error">
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <div>
+                                                                    <label for="password" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Password</label>
+                                                                    <div class="relative">
+                                                                        <input type="password" name="password" id="password" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" required>
+                                                                        <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 dark:text-neutral-400">
+                                                                            <!-- Icon for closed eye (password hidden) -->
+                                                                            <svg id="eyeIconClosed" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                                                                            </svg>
+                                                                            <!-- Icon for open eye (password visible) -->
+                                                                            <svg id="eyeIconOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hidden">
+                                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                                                            </svg>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+
+                                                            <button type="submit" id="buttondaftar" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">Tambah Data</button>
                                                         </div>
-                                                    </div>
+                                                    </form>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </dialog>
                                     </div>
                                 </div>
                             </div>
@@ -345,12 +335,10 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
                                                     </button>
 
                                                     <!-- Tombol Hapus -->
-                                                    <form id="deleteForm" action="manajemenpoli/delete.php" method="post" class="inline" onsubmit="return confirmDelete(event)">
-                                                        <input type="hidden" name="id">
-                                                        <button class="btn btn-error" name="id" value="<?php echo $row['id']; ?>">
-                                                            <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
-                                                        </button>
-                                                    </form>
+                                                    <button class="btn btn-error delete-btn" data-id="<?php echo $row['id']; ?>">
+                                                        <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
+                                                    </button>
+
                                                 </div>
                                             </td>
 
@@ -409,48 +397,61 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
     <!-- End Content -->
     <!-- dialog edit data -->
     <dialog id="editModal" class="modal">
-        <div class="modal-box relative bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="modal-box">
             <form method="dialog">
-                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" aria-label="Close">
-                    ✕
-                </button>
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
-            <h3 class="text-lg text-center font-bold text-gray-800 dark:text-neutral-200">
-                Edit Data Admin
-            </h3>
-            <form id="editForm" action="dataadmin.php" method="POST" class="mt-4">
-                <input type="hidden" name="id" id="edit-id">
-
-                <div class="mb-4">
-                    <label for="edit-nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Admin</label>
-                    <input type="text" name="nama" id="edit-nama" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
-                </div>
-
-                <div class="mb-4">
-                    <label for="edit-username" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Username</label>
-                    <input type="text" name="username" id="edit-username" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
-                </div>
-
-                <div class="mb-4">
-                    <label for="edit-email" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Email</label>
-                    <input type="email" name="email" id="edit-email" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
-                </div>
-
-                <div class="modal-action">
-                    <button type="submit" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white shadow-sm hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
-                        Simpan Perubahan
-                    </button>
-                    <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" onclick="document.getElementById('editModal').close()">
-                        Batal
-                    </button>
-                </div>
-            </form>
+            <h3 class="text-lg font-bold">Edit Data Admin</h3>
+            <div class="mt-5">
+                <form id="editForm">
+                    <input type="hidden" name="id" id="edit-id">
+                    <div class="grid gap-y-4">
+                        <div>
+                            <div>
+                                <label for="edit-nama" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Nama Admin</label>
+                                <input type="text" name="nama" id="edit-nama" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" required>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <label for="edit-username" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Username</label>
+                                <input type="text" name="username" id="edit-username" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" required>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <label for="edit-email" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Email</label>
+                                <input type="email" name="email" id="edit-email" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="edit-password" class="block mb-2 text-sm text-gray-700 font-medium dark:text-white">Password</label>
+                            <div class="relative">
+                                <input type="password" name="password" id="edit-password" class="input input-bordered input-info py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" required>
+                                <button type="button" id="toggleEditPassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 dark:text-neutral-400">
+                                    <svg id="eyeIconEditClosed" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                                    </svg>
+                                    <svg id="eyeIconEditOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 hidden">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-action mt-4">
+                        <button type="submit" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white shadow-sm hover:bg-blue-700">Simpan Perubahan</button>
+                        <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800" onclick="document.getElementById('editModal').close()">Batal</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </dialog>
 
     <!-- dialog lihat data -->
     <dialog id="lihatModal" class="modal">
-        <div class="modal-box relative bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="modal-box ">
             <form method="dialog">
                 <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" aria-label="Close">
                     ✕
@@ -484,7 +485,6 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
                     <p id="lihat-password" class="text-gray-800 dark:text-neutral-400 w-2/3"></p>
                 </div>
             </div>
-
         </div>
     </dialog>
 
@@ -509,6 +509,7 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
         }
     });
 
+
     //jsbtedit
     document.addEventListener('DOMContentLoaded', function() {
         // Event Listener untuk tombol edit
@@ -525,6 +526,7 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
                         document.getElementById('edit-nama').value = data.nama_admin;
                         document.getElementById('edit-username').value = data.username;
                         document.getElementById('edit-email').value = data.email;
+                        document.getElementById('edit-password').value = data.password;
 
                         // Tampilkan modal menggunakan method showModal()
                         document.getElementById('editModal').showModal();
@@ -532,20 +534,55 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
                     .catch(error => console.error('Error:', error));
             });
         });
+        document.getElementById('toggleEditPassword').addEventListener('click', function() {
+            const passwordField = document.getElementById('edit-password');
+            const eyeClosed = document.getElementById('eyeIconEditClosed');
+            const eyeOpen = document.getElementById('eyeIconEditOpen');
 
-        // Event Listener untuk tombol close pada modal
-        document.querySelectorAll('button[aria-label="Close"]').forEach(button => {
-            button.addEventListener('click', function() {
-                document.getElementById('editModal').close();
-            });
-        });
-
-        // Tutup modal saat klik di luar modal-box
-        document.getElementById('editModal').addEventListener('click', function(event) {
-            const modalBox = document.querySelector('.modal-box');
-            if (!modalBox.contains(event.target)) {
-                this.close();
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                eyeClosed.classList.add('hidden');
+                eyeOpen.classList.remove('hidden');
+            } else {
+                passwordField.type = 'password';
+                eyeClosed.classList.remove('hidden');
+                eyeOpen.classList.add('hidden');
             }
+        });
+        // Submit form dengan AJAX & SweetAlert
+        document.getElementById("editForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Mencegah reload halaman
+
+            let formData = new FormData(this);
+
+            fetch('./manajemenadmin/edit.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json()) // Menggunakan JSON dari PHP
+                .then(data => {
+                    if (data.status === 'success') {
+                        editModal.close(); // Tutup modal setelah submit sukses
+                        Swal.fire({
+                            title: "Berhasil!",
+                            text: "Data admin berhasil diperbarui",
+                            icon: "success",
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload(); // Reload halaman setelah berhasil
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Gagal!",
+                            text: "Gagal memperbarui data admin",
+                            icon: "error"
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
         });
     });
 
@@ -586,6 +623,52 @@ if (isset($_GET['getData']) && isset($_GET['id'])) {
             if (!modalBox.contains(event.target)) {
                 this.close();
             }
+        });
+    });
+
+
+    //hapus
+    document.addEventListener("DOMContentLoaded", function() {
+        const deleteButtons = document.querySelectorAll(".delete-btn");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                let id = this.getAttribute("data-id");
+
+                Swal.fire({
+                    title: "Apakah Anda yakin?",
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Ya, hapus!",
+                    cancelButtonText: "Batal"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch("./manajemenadmin/delete.php", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                                body: "id=" + id
+                            })
+                            .then(response => response.text())
+                            .then(data => {
+                                Swal.fire({
+                                    title: "Terhapus!",
+                                    text: "Data berhasil dihapus.",
+                                    icon: "success"
+                                }).then(() => {
+                                    location.reload(); // Refresh halaman setelah penghapusan
+                                });
+                            })
+                            .catch(error => {
+                                Swal.fire("Error", "Terjadi kesalahan!", "error");
+                            });
+                    }
+                });
+            });
         });
     });
 
